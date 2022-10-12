@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "makenew_rbgem/version"
-require_relative "makenew_rbgem/todo"
+require_relative "makenew-rbgem/version"
+require_relative "makenew-rbgem/todo"
 
 module MakenewRbgem
   # TODO

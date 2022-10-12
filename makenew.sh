@@ -51,7 +51,6 @@ makenew () {
   echo 'Example values are shown in parentheses.'
   read -p '> Package title (My Package): ' mk_title
   read -p '> Gem name (my-gem): ' mk_slug
-  read -p '> Gem lib path (my_gem): ' mk_dir
   read -p '> Module name (MyModule): ' mk_module
   read -p '> Short package description (Foos and bars.): ' mk_description
   read -p '> Author name (Linus Torvalds): ' mk_author
@@ -68,13 +67,11 @@ makenew () {
   find_replace "s/Evan Sosenko/${mk_author}/g"
   find_replace "s/razorx@evansosenko\.com/${mk_email}/g"
   find_replace "s|MakenewRbgem|${mk_module}|g"
-  find_replace "s|makenew_rbgem|${mk_dir}|g"
   find_replace "s|makenew-rbgem|${mk_slug}|g"
   find_replace "s|makenew/rbgem|${mk_user}/${mk_repo}|g"
   find_replace "s|rbgem|${mk_repo}|g"
 
   git mv lib/makenew-rbgem.rb lib/${mk_slug}.rb
-  git mv lib/makenew_rbgem lib/${mk_dir}
 
   echo
   echo 'Replacing boilerplate.'

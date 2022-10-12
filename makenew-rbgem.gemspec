@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/makenew_rbgem/version"
+require_relative "lib/makenew-rbgem/version"
 
 Gem::Specification.new do |spec|
   spec.name = "makenew-rbgem"
