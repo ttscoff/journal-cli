@@ -1,0 +1,17 @@
+---
+name: Setup
+description: Setup Ruby and install dependencies.
+
+inputs:
+  node_version:
+    description: The Ruby version.
+    required: false
+    default: '3.1.2'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true

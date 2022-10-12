@@ -1,0 +1,49 @@
+---
+name: publish
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  rubygems:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Setup credentials
+        run: |
+          mkdir -p ~/.gem
+          echo ":rubygems: Bearer $TOKEN" > ~/.gem/credentials
+          chmod 640 ~/.gem/credentials
+        env:
+          TOKEN: ${{ secrets.RUBYGEMS_API_KEY }}
+      - name: Publish
+        run: bundle exec gem release
+        env:
+          GEM_RELEASE_KEY: rubygems
+          GEM_RELEASE_HOST: https://rubygems.org
+  github:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Setup credentials
+        run: |
+          mkdir -p ~/.gem
+          echo ":rubygems: Bearer $TOKEN" > ~/.gem/credentials
+          chmod 640 ~/.gem/credentials
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish
+        run: bundle exec gem release
+        env:
+          GEM_RELEASE_KEY: github
+          GEM_RELEASE_HOST: https://rubygems.pkg.github.com/${{ github.repository_owner }}
