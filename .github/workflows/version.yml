@@ -44,6 +44,14 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Cut ${{ github.event.inputs.version }}${{ github.event.client_payload.version }} version
-        run: bundle exec gem bump --sign --push --version ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
+        run: bundle exec gem bump --no-commit --version ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
+      - name: Update Gemfile.lock
+        run: bundle install
       - name: Tag ${{ github.event.inputs.version }}${{ github.event.client_payload.version }} version
-        run: bundle exec gem tag --sign --push
+        run: |
+          git add .
+          git commit --sign -m "${VERSION}"
+          git tag --sign "v${VERSION}" -m "${VERSION}"
+          git push --follow-tags
+        env:
+          VERSION: ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
