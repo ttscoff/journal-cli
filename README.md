@@ -11,9 +11,9 @@ Bootstrap a new Ruby gem in five minutes or less.
 
 ### Features
 
-- [Ruby]'s [gem][RubyGems.org] package structure.
+- [Ruby]'s [gem][rubygems.org] package structure.
 - Consistent dependency management with [Bundler].
-- Release your ruby gems with ease using [gem release].
+- Release your Ruby gems with ease using [gem release].
 - [Standard] Ruby style guide, linter, and formatter.
 - Productive and fun testing with [RSpec].
 - Code coverage reporting with [SimpleCov].
@@ -22,16 +22,16 @@ Bootstrap a new Ruby gem in five minutes or less.
 - Consistent coding with [EditorConfig].
 - Badges from [Shields.io].
 
-[Bundler]: https://bundler.io/
-[EditorConfig]: https://editorconfig.org/
-[GitHub Actions]: https://github.com/features/actions
-[Keep a CHANGELOG]: https://keepachangelog.com/
-[RSpec]: https://rspec.info/
-[RubyGems.org]: https://rubygems.org/
-[Ruby]: https://www.ruby-lang.org/
-[Shields.io]: https://shields.io/
-[SimpleCov]: https://github.com/simplecov-ruby/simplecov
-[Standard]: https://github.com/testdouble/standard
+[bundler]: https://bundler.io/
+[editorconfig]: https://editorconfig.org/
+[github actions]: https://github.com/features/actions
+[keep a changelog]: https://keepachangelog.com/
+[rspec]: https://rspec.info/
+[rubygems.org]: https://rubygems.org/
+[ruby]: https://www.ruby-lang.org/
+[shields.io]: https://shields.io/
+[simplecov]: https://github.com/simplecov-ruby/simplecov
+[standard]: https://github.com/testdouble/standard
 [gem release]: https://github.com/svenfuchs/gem-release
 
 ### Bootstrapping a new project
@@ -93,7 +93,7 @@ Note that `CHANGELOG.md` is just a template for this skeleton.
 The actual changes for this project are documented in the commit history
 and summarized under [Releases].
 
-[Releases]: https://github.com/makenew/rbgem/releases
+[releases]: https://github.com/makenew/rbgem/releases
 
 ## Installation
 
@@ -103,7 +103,7 @@ Add this as a dependency to your project using [Bundler] with
 $ bundle add makenew-rbgem
 ```
 
-[Bundler]: https://bundler.io/
+[bundler]: https://bundler.io/
 
 ## Development and Testing
 
@@ -159,8 +159,8 @@ Install the development dependencies with
 $ bundle install
 ```
 
-[Bundler]: https://bundler.io/
-[Ruby]: https://www.ruby-lang.org/
+[bundler]: https://bundler.io/
+[ruby]: https://www.ruby-lang.org/
 [rbenv]: https://github.com/rbenv/rbenv
 
 ### Publishing
@@ -171,7 +171,7 @@ Publishing may be triggered using on the web
 using a [workflow_dispatch on GitHub Actions].
 
 [gem release]: https://github.com/svenfuchs/gem-release
-[workflow_dispatch on GitHub Actions]: https://github.com/makenew/rbgem/actions?query=workflow%3Aversion
+[workflow_dispatch on github actions]: https://github.com/makenew/rbgem/actions?query=workflow%3Aversion
 
 ## GitHub Actions
 
@@ -196,8 +196,8 @@ Set these additional secrets to enable the action:
 - `GPG_PRIVATE_KEY`: The GitHub user's [GPG private key].
 - `GPG_PASSPHRASE`: The GitHub user's GPG passphrase.
 
-[GitHub Actions]: https://github.com/features/actions
-[GPG private key]: https://github.com/marketplace/actions/import-gpg#prerequisites
+[github actions]: https://github.com/features/actions
+[gpg private key]: https://github.com/marketplace/actions/import-gpg#prerequisites
 
 ## Contributing
 
