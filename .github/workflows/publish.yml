@@ -18,8 +18,8 @@ jobs:
       - name: Setup credentials
         run: |
           mkdir -p ~/.gem
-          echo ":rubygems: Bearer $TOKEN" > ~/.gem/credentials
-          chmod 640 ~/.gem/credentials
+          echo ":rubygems: $TOKEN" > ~/.gem/credentials
+          chmod 600 ~/.gem/credentials
         env:
           TOKEN: ${{ secrets.RUBYGEMS_API_KEY }}
       - name: Publish
@@ -38,8 +38,8 @@ jobs:
       - name: Setup credentials
         run: |
           mkdir -p ~/.gem
-          echo ":rubygems: Bearer $TOKEN" > ~/.gem/credentials
-          chmod 640 ~/.gem/credentials
+          echo ":github: Bearer $TOKEN" > ~/.gem/credentials
+          chmod 600 ~/.gem/credentials
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish
