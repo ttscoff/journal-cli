@@ -46,7 +46,7 @@ jobs:
       - name: Cut ${{ github.event.inputs.version }}${{ github.event.client_payload.version }} version
         run: bundle exec gem bump --no-commit --version ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
       - name: Update Gemfile.lock
-        run: bundle install
+        run: bundle install --no-deployment
       - name: Tag ${{ github.event.inputs.version }}${{ github.event.client_payload.version }} version
         run: |
           git add .
