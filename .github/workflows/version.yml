@@ -61,4 +61,4 @@ jobs:
           git tag --sign "v${VERSION}" -m "${VERSION}"
           git push --follow-tags
         env:
-          VERSION: ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
+          VERSION: ${{ steps.meta.outputs.version }}
