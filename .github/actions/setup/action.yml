@@ -3,7 +3,7 @@ name: Setup
 description: Setup Ruby and install dependencies.
 
 inputs:
-  node_version:
+  ruby_version:
     description: The Ruby version.
     required: false
     default: '3.1.2'
@@ -15,3 +15,4 @@ runs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
+        ruby-version: ${{ inputs.ruby_version }}
