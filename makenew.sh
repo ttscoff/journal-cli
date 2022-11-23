@@ -71,7 +71,9 @@ makenew () {
   find_replace "s|makenew/rbgem|${mk_user}/${mk_repo}|g"
   find_replace "s|rbgem|${mk_repo}|g"
 
-  git mv lib/makenew-rbgem.rb lib/${mk_slug}.rb
+  git mv makenew-rbgem.gemspec "${mk_slug}.gemspec"
+  git mv lib/makenew-rbgem.rb "lib/${mk_slug}.rb"
+  git mv lib/makenew-rbgem "lib/${mk_slug}"
 
   echo
   echo 'Replacing boilerplate.'
