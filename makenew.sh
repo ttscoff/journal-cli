@@ -49,10 +49,10 @@ makenew () {
   echo 'Answer all prompts.'
   echo 'There are no defaults.'
   echo 'Example values are shown in parentheses.'
-  read -p '> Package title (My Package): ' mk_title
+  read -p '> Project title (My Package): ' mk_title
   read -p '> Gem name (my-gem): ' mk_slug
   read -p '> Module name (MyModule): ' mk_module
-  read -p '> Short package description (Foos and bars.): ' mk_description
+  read -p '> Short project description (Foos and bars.): ' mk_description
   read -p '> Author name (Linus Torvalds): ' mk_author
   read -p '> Author email (linus@example.com): ' mk_email
   read -p '> GitHub user or organization name (my-user): ' mk_user
@@ -62,8 +62,8 @@ makenew () {
   sed_insert README.md '10i' 'TODO'
 
   find_replace "s/^  \"VERSION\" = \".*\"/  \"VERSION\" = \"0.0.0\"/g"
-  find_replace "s/Ruby Gem Package Skeleton/${mk_title}/g"
-  find_replace "s/Package skeleton for a Ruby gem\./${mk_description}/g"
+  find_replace "s/Ruby Gem Project Skeleton/${mk_title}/g"
+  find_replace "s/Project skeleton for a Ruby gem\./${mk_description}/g"
   find_replace "s/Evan Sosenko/${mk_author}/g"
   find_replace "s/razorx@evansosenko\.com/${mk_email}/g"
   find_replace "s|MakenewRbgem|${mk_module}|g"

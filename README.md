@@ -1,9 +1,9 @@
-# Ruby Gem Package Skeleton
+# Ruby Gem Project Skeleton
 
 [![RubyGems.org](https://img.shields.io/gem/v/makenew-rbgem)](https://rubygems.org/gems/makenew-rbgem)
 [![GitHub Actions](https://github.com/makenew/rbgem/workflows/main/badge.svg)](https://github.com/makenew/rbgem/actions)
 
-Package skeleton for a Ruby gem.
+Project skeleton for a Ruby gem.
 
 ## Description
 
@@ -62,7 +62,7 @@ Bootstrap a new Ruby gem in five minutes or less.
    $ git push -u origin master
    ```
 6. Ensure the GitHub action passes,
-   then publish the initial version of the package with
+   then publish the initial version of the gem with
    ```
    $ bundle install
    $ bundle exec gem bump --sign --push --version patch
@@ -179,7 +179,7 @@ _GitHub Actions should already be configured: this section is for reference only
 
 The following repository secrets must be set on [GitHub Actions]:
 
-- `RUBYGEMS_API_KEY`: RubyGems.org token for publishing packages.
+- `RUBYGEMS_API_KEY`: RubyGems.org token for publishing gems.
 
 These must be set manually.
 
