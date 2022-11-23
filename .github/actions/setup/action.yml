@@ -6,7 +6,7 @@ inputs:
   ruby_version:
     description: The Ruby version.
     required: false
-    default: '3.1.2'
+    default: '3.0.4'
 
 runs:
   using: composite
