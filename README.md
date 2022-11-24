@@ -115,7 +115,13 @@ $ cd rbgem
 $ bundle install
 ```
 
-Run the command below in a separate terminal window:
+Run the command below
+
+```
+$ bundle exec rake
+```
+
+Open an interactive ruby console with
 
 ```
 $ bundle exec rake
