@@ -195,7 +195,6 @@ The version and format GitHub actions
 require a user with write access to the repository.
 Set these additional secrets to enable the action:
 
-- `GH_USER`: The GitHub user's username.
 - `GH_TOKEN`: A personal access token for the user.
 - `GIT_USER_NAME`: The GitHub user's real name.
 - `GIT_USER_EMAIL`: The GitHub user's email.
