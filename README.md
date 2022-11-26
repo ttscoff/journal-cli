@@ -173,8 +173,7 @@ $ bundle install
 
 Use [gem release] to release a new version.
 
-Publishing may be triggered using on the web
-using a [workflow_dispatch on GitHub Actions].
+Publishing may be triggered using a [workflow_dispatch on GitHub Actions].
 
 [gem release]: https://github.com/svenfuchs/gem-release
 [workflow_dispatch on github actions]: https://github.com/makenew/rbgem/actions?query=workflow%3Aversion
