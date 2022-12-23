@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.bindir = "bin"
   spec.executables = spec.files.grep(%r{\A#{spec.bindir}/}) { |f| File.basename(f) }
 
-  spec.files = Dir["lib/**/*{[!_spec]}.rb"]
+  spec.files = Dir["lib/**/*.rb"].reject { |f| f.end_with?("_spec.rb") }
   spec.files += Dir["[A-Z]*"]
 
   spec.add_development_dependency "bundler", "~> 2.0"
