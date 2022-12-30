@@ -70,7 +70,7 @@ jobs:
           path: |
             pkg/
       - name: Publish
-        run: bundle exec gem push pkg/*
+        run: bundle exec gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST pkg/*
         env:
           GEM_RELEASE_KEY: rubygems
           GEM_RELEASE_HOST: https://rubygems.org
@@ -99,7 +99,7 @@ jobs:
           path: |
             pkg/
       - name: Publish
-        run: bundle exec gem push pkg/*
+        run: bundle exec gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST pkg/*
         env:
           GEM_RELEASE_KEY: github
           GEM_RELEASE_HOST: https://rubygems.pkg.github.com/${{ github.repository_owner }}
