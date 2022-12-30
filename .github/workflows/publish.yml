@@ -1,5 +1,6 @@
 ---
-name: publish
+
+run-name: Publish ${{ github.ref_name }}
 
 on:
   push:
