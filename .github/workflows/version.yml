@@ -1,16 +1,13 @@
 ---
 name: version
 
-run-name: ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
+run-name: ${{ github.event.inputs.version }}
 
 on:
   workflow_dispatch:
     inputs:
       version:
         description: Version to cut
-  repository_dispatch:
-    types:
-      - version
 
 jobs:
   release:
@@ -32,8 +29,8 @@ jobs:
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Setup
         uses: ./.github/actions/setup
-      - name: Cut ${{ github.event.inputs.version }}${{ github.event.client_payload.version }} version
-        run: bundle exec gem bump --no-commit --version ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
+      - name: Cut ${{ github.event.inputs.version }} version
+        run: bundle exec gem bump --no-commit --version ${{ github.event.inputs.version }}
       - name: Update Gemfile.lock
         run: |
           bundle config set --local deployment 'false'
@@ -43,7 +40,7 @@ jobs:
         run: |
           version=$(bundle exec parse-gemspec-cli parse makenew-rbgem.gemspec | jq -r .version)
           echo "version=${version}" >> $GITHUB_OUTPUT
-      - name: Tag ${{ github.event.inputs.version }}${{ github.event.client_payload.version }} version
+      - name: Tag ${{ github.event.inputs.version }} version
         run: |
           git add .
           git commit --sign -m "${VERSION}"
