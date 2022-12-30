@@ -30,6 +30,8 @@ jobs:
   github:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
