@@ -50,6 +50,7 @@ jobs:
   rubygems:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs: artifacts
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -62,8 +63,14 @@ jobs:
           chmod 600 ~/.gem/credentials
         env:
           TOKEN: ${{ secrets.RUBYGEMS_API_KEY }}
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          path: |
+            pkg/
       - name: Publish
-        run: bundle exec gem release
+        run: bundle exec gem push pkg/*
         env:
           GEM_RELEASE_KEY: rubygems
           GEM_RELEASE_HOST: https://rubygems.org
@@ -72,6 +79,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       packages: write
+    needs: artifacts
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -84,8 +92,14 @@ jobs:
           chmod 600 ~/.gem/credentials
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          path: |
+            pkg/
       - name: Publish
-        run: bundle exec gem release
+        run: bundle exec gem push pkg/*
         env:
           GEM_RELEASE_KEY: github
           GEM_RELEASE_HOST: https://rubygems.pkg.github.com/${{ github.repository_owner }}
