@@ -1,5 +1,5 @@
 ---
-name: format
+name: Format code
 
 on:
   pull_request:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   fix:
+    name: Commit fixes
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

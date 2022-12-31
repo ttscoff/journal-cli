@@ -1,4 +1,5 @@
 ---
+name: Publish version
 
 run-name: Publish ${{ github.ref_name }}
 
@@ -48,6 +49,7 @@ jobs:
           fail_on_unmatched_files: true
           prerelease: ${{ contains(github.ref_name, 'pre') }}
   rubygems:
+    name: RubyGems.org
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: artifacts
@@ -75,6 +77,7 @@ jobs:
           GEM_RELEASE_KEY: rubygems
           GEM_RELEASE_HOST: https://rubygems.org
   github:
+    name: GitHub Packages
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
