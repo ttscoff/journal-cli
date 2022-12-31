@@ -8,7 +8,8 @@ on:
       - v*
 
 jobs:
-  release:
+  artifacts:
+    name: Build artifacts
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -18,11 +19,32 @@ jobs:
         uses: ./.github/actions/setup
       - name: Build
         run: bundle exec rake build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          path: |
+            pkg/
+  release:
+    name: GitHub Releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: artifacts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          path: |
+            pkg/
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GH_TOKEN }}
-          files: pkg/*
+          files: |
+            pkg/*
           fail_on_unmatched_files: true
           prerelease: ${{ contains(github.ref_name, 'pre') }}
   rubygems:
