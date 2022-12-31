@@ -40,7 +40,7 @@ jobs:
       - name: Get meta
         id: meta
         run: |
-          version=$(bundle exec parse-gemspec-cli parse makenew-rbgem.gemspec | jq -r .version)
+          version=$(bundle exec parse-gemspec-cli parse *.gemspec | jq -r .version)
           echo "version=${version}" >> $GITHUB_OUTPUT
       - name: Tag ${{ github.event.inputs.version }} version
         run: |
