@@ -58,18 +58,12 @@ jobs:
         uses: ./.github/actions/setup
         with:
           install_dependencies: false
+          gem_credentials: ':rubygems: ${{ secrets.RUBYGEMS_API_KEY }}'
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.sha }}
           path: pkg/
-      - name: Setup credentials
-        run: |
-          mkdir -p ~/.gem
-          echo ":rubygems: $TOKEN" > ~/.gem/credentials
-          chmod 600 ~/.gem/credentials
-        env:
-          TOKEN: ${{ secrets.RUBYGEMS_API_KEY }}
       - name: Publish
         run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST pkg/*
         env:
@@ -89,18 +83,12 @@ jobs:
         uses: ./.github/actions/setup
         with:
           install_dependencies: false
+          gem_credentials: ':github: Bearer ${{ secrets.GITHUB_TOKEN }}'
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.sha }}
           path: pkg/
-      - name: Setup credentials
-        run: |
-          mkdir -p ~/.gem
-          echo ":github: Bearer $TOKEN" > ~/.gem/credentials
-          chmod 600 ~/.gem/credentials
-        env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish
         run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST pkg/*
         env:

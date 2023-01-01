@@ -12,10 +12,22 @@ inputs:
     type: boolean
     required: false
     default: true
+  gem_credentials:
+    description: Gem credentials.
+    required: false
 
 runs:
   using: composite
   steps:
+    - name: Setup credentials
+      if: inputs.gem_credentials
+      shell: bash
+      run: |
+        mkdir -p ~/.gem
+        echo "$GEM_CREDENTIALS" > ~/.gem/credentials
+        chmod 600 ~/.gem/credentials
+      with:
+        GEM_CREDENTIALS: ${{ inputs.gem_credentials }}
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
