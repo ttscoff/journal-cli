@@ -26,7 +26,7 @@ runs:
         mkdir -p ~/.gem
         echo "$GEM_CREDENTIALS" > ~/.gem/credentials
         chmod 600 ~/.gem/credentials
-      with:
+      env:
         GEM_CREDENTIALS: ${{ inputs.gem_credentials }}
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
