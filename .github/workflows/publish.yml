@@ -24,6 +24,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.sha }}
+          if-no-files-found: error
           path: pkg/
   release:
     name: GitHub Releases
