@@ -7,6 +7,11 @@ inputs:
     description: The Ruby version.
     required: false
     default: '3.2.0'
+  install_dependencies:
+    description: Install dependencies.
+    type: boolean
+    required: false
+    default: true
 
 runs:
   using: composite
@@ -14,5 +19,5 @@ runs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        bundler-cache: true
+        bundler-cache: ${{ inputs.install_dependencies }}
         ruby-version: ${{ inputs.ruby_version }}
