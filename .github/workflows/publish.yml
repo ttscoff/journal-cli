@@ -8,6 +8,9 @@ on:
     tags:
       - v*
 
+env:
+  artifact_path: pkg
+
 jobs:
   artifacts:
     name: Build artifacts
@@ -25,7 +28,7 @@ jobs:
         with:
           name: ${{ github.sha }}
           if-no-files-found: error
-          path: pkg/
+          path: ${{ env.artifact_path }}/
   release:
     name: GitHub Releases
     runs-on: ubuntu-latest
@@ -38,14 +41,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.sha }}
-          path: pkg/
+          path: ${{ env.artifact_path }}/
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GH_TOKEN }}
           fail_on_unmatched_files: true
           prerelease: ${{ contains(github.ref_name, 'pre') }}
-          files: pkg/*
+          files: ${{ env.artifact_path }}/*
   rubygems:
     name: RubyGems.org
     runs-on: ubuntu-latest
@@ -63,10 +66,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.sha }}
-          path: pkg/
+          path: ${{ env.artifact_path }}/
       - name: Publish
-        run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST pkg/*
+        run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST $ARTIFACT_PATH/*
         env:
+          ARTIFACT_PATH: ${{ env.artifact_path }}
           GEM_RELEASE_KEY: rubygems
           GEM_RELEASE_HOST: https://rubygems.org
   github:
@@ -88,9 +92,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.sha }}
-          path: pkg/
+          path: ${{ env.artifact_path }}/
       - name: Publish
-        run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST pkg/*
+        run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST $ARTIFACT_PATH/*
         env:
           GEM_RELEASE_KEY: github
           GEM_RELEASE_HOST: https://rubygems.pkg.github.com/${{ github.repository_owner }}
