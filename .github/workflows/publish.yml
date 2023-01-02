@@ -70,9 +70,9 @@ jobs:
       - name: Publish
         run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST $ARTIFACT_PATH/*
         env:
-          ARTIFACT_PATH: ${{ env.artifact_path }}
           GEM_RELEASE_KEY: rubygems
           GEM_RELEASE_HOST: https://rubygems.org
+          ARTIFACT_PATH: ${{ env.artifact_path }}
   github:
     name: GitHub Packages
     runs-on: ubuntu-latest
@@ -98,3 +98,4 @@ jobs:
         env:
           GEM_RELEASE_KEY: github
           GEM_RELEASE_HOST: https://rubygems.pkg.github.com/${{ github.repository_owner }}
+          ARTIFACT_PATH: ${{ env.artifact_path }}
