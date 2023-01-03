@@ -51,51 +51,23 @@ jobs:
           files: ${{ env.artifact_path }}/*
   rubygems:
     name: RubyGems.org
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    uses: ./.github/workflows/publish-gem.yml
     needs: artifacts
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          install_dependencies: false
-          gem_credentials: ':rubygems: ${{ secrets.RUBYGEMS_API_KEY }}'
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ github.sha }}
-          path: ${{ env.artifact_path }}/
-      - name: Publish
-        run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST $ARTIFACT_PATH/*
-        env:
-          GEM_RELEASE_KEY: rubygems
-          GEM_RELEASE_HOST: https://rubygems.org
-          ARTIFACT_PATH: ${{ env.artifact_path }}
+    with:
+       registry_key: rubygems
+       registry_host: https://rubygems.org
+       gem_artifacts: pkg
+    secrets:
+       registry_credentials: ${{ secrets.RUBYGEMS_API_KEY }}
   github:
     name: GitHub Packages
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    uses: ./.github/workflows/publish-gem.yml
     permissions:
       packages: write
     needs: artifacts
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          install_dependencies: false
-          gem_credentials: ':github: Bearer ${{ secrets.GITHUB_TOKEN }}'
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ github.sha }}
-          path: ${{ env.artifact_path }}/
-      - name: Publish
-        run: gem push --key $GEM_RELEASE_KEY --host $GEM_RELEASE_HOST $ARTIFACT_PATH/*
-        env:
-          GEM_RELEASE_KEY: github
-          GEM_RELEASE_HOST: https://rubygems.pkg.github.com/${{ github.repository_owner }}
-          ARTIFACT_PATH: ${{ env.artifact_path }}
+    with:
+       registry_key: github
+       registry_host: https://rubygems.pkg.github.com/${{ github.repository_owner }}
+       gem_artifacts: pkg
+    secrets:
+       credentials: Bearer ${{ secrets.GITHUB_TOKEN }}

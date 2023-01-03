@@ -9,9 +9,8 @@ inputs:
     default: '3.2.0'
   install_dependencies:
     description: Install dependencies.
-    type: boolean
     required: false
-    default: true
+    default: 'true'
   gem_credentials:
     description: Gem credentials.
     required: false
@@ -31,5 +30,5 @@ runs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        bundler-cache: ${{ inputs.install_dependencies }}
+        bundler-cache: ${{ inputs.install_dependencies == 'true' }}
         ruby-version: ${{ inputs.ruby_version }}
