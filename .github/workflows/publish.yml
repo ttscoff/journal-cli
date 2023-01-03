@@ -70,4 +70,4 @@ jobs:
        registry_host: https://rubygems.pkg.github.com/${{ github.repository_owner }}
        gem_artifacts: pkg
     secrets:
-       credentials: Bearer ${{ secrets.GITHUB_TOKEN }}
+       registry_credentials: Bearer ${{ secrets.GITHUB_TOKEN }}
