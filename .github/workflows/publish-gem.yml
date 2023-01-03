@@ -12,10 +12,6 @@ on:
         description: The gem registry host.
         type: string
         required: true
-      gem_artifacts:
-        description: The path to the gem artifacts.
-        type: string
-        required: true
     secrets:
       registry_credentials:
         description: The gem registry credentials.
@@ -38,10 +34,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.sha }}
-          path: ${{ inputs.gem_artifacts }}/
+          path: pkg/
       - name: Publish
         run: gem push --key $REGISTRY_KEY --host $REGISTRY_HOST $GEM_ARTIFACTS/*
         env:
           REGISTRY_KEY: ${{ inputs.registry_key }}
           REGISTRY_HOST: ${{ inputs.registry_host }}
-          GEM_ARTIFACTS: ${{ inputs.gem_artifacts }}
+          GEM_ARTIFACTS: pkg
