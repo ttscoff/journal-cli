@@ -1,5 +1,5 @@
 ---
-name: Format code
+name: Format
 
 on:
   pull_request:

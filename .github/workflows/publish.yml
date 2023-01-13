@@ -1,5 +1,5 @@
 ---
-name: Publish version
+name: Publish
 
 run-name: Publish ${{ github.ref_name }}
 
@@ -48,7 +48,7 @@ jobs:
           files: pkg/*
   rubygems:
     name: RubyGems.org
-    uses: ./.github/workflows/publish-gem.yml
+    uses: ./.github/workflows/_publish.yml
     needs: artifacts
     with:
        registry_key: rubygems
@@ -57,7 +57,7 @@ jobs:
        registry_credentials: ${{ secrets.RUBYGEMS_API_KEY }}
   github:
     name: GitHub Packages
-    uses: ./.github/workflows/publish-gem.yml
+    uses: ./.github/workflows/_publish.yml
     permissions:
       packages: write
     needs: artifacts

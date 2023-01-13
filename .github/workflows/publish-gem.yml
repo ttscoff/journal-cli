@@ -1,5 +1,5 @@
 ---
-name: Publish gem
+name: _publish
 
 on:
   workflow_call:

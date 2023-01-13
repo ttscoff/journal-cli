@@ -1,5 +1,5 @@
 ---
-name: Cut version
+name: Version
 
 run-name: Cut ${{ github.event.inputs.version }}
 
