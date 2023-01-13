@@ -58,3 +58,48 @@ jobs:
           ruby_version: ${{ matrix.ruby }}
       - name: Lint
         run: bundle exec rake lint
+  build:
+    name: Build
+    uses: ./.github/workflows/_build.yml
+  install:
+    name: Install (Ruby ${{ matrix.ruby }} on ${{ matrix.os_name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        ruby:
+          - '3.0'
+          - '3.1'
+          - '3.2'
+        include:
+          - os: ubuntu-latest
+            os_name: Linux
+          - os: macos-latest
+            os_name: macOS
+          - os: windows-latest
+            os_name: Windows
+    steps:
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ${{ matrix.ruby }}
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: .
+      - name: Install
+        run: gem install *.gem
+      - name: Require
+        run: echo "require '$GEM_REQUIRE_NAME'" > main.rb
+        env:
+          GEM_REQUIRE_NAME: makenew-rbgem
+      - name: Run
+        run: ruby main.rb

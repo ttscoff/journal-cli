@@ -4,6 +4,10 @@ name: _publish
 on:
   workflow_call:
     inputs:
+      artifact_name:
+        description: The artifact name.
+        type: string
+        required: true
       registry_key:
         description: The gem registry credentials key.
         type: string
@@ -30,10 +34,10 @@ jobs:
         with:
           install_dependencies: 'false'
           gem_credentials: ':${{ inputs.registry_key }}: ${{ secrets.registry_credentials }}'
-      - name: Download artifacts
+      - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.sha }}
+          name: ${{ inputs.artifact_name }}
           path: pkg/
       - name: Publish
         run: gem push --key $REGISTRY_KEY --host $REGISTRY_HOST $GEM_ARTIFACTS/*

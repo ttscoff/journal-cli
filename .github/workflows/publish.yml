@@ -9,35 +9,21 @@ on:
       - v*
 
 jobs:
-  artifacts:
-    name: Build artifacts
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup
-        uses: ./.github/actions/setup
-      - name: Build
-        run: bundle exec rake build
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ github.sha }}
-          if-no-files-found: error
-          path: pkg/
+  build:
+    name: Build
+    uses: ./.github/workflows/_build.yml
   release:
     name: GitHub Releases
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: artifacts
+    needs: build
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Download artifacts
+      - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.sha }}
+          name: ${{ needs.build.outputs.artifact_name }}
           path: pkg/
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
@@ -49,10 +35,11 @@ jobs:
   rubygems:
     name: RubyGems.org
     uses: ./.github/workflows/_publish.yml
-    needs: artifacts
+    needs: build
     with:
-       registry_key: rubygems
-       registry_host: https://rubygems.org
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
+      registry_key: rubygems
+      registry_host: https://rubygems.org
     secrets:
        registry_credentials: ${{ secrets.RUBYGEMS_API_KEY }}
   github:
@@ -60,9 +47,10 @@ jobs:
     uses: ./.github/workflows/_publish.yml
     permissions:
       packages: write
-    needs: artifacts
+    needs: build
     with:
-       registry_key: github
-       registry_host: https://rubygems.pkg.github.com/${{ github.repository_owner }}
+      artifact_name: ${{ needs.build.outputs.artifact_name }}
+      registry_key: github
+      registry_host: https://rubygems.pkg.github.com/${{ github.repository_owner }}
     secrets:
        registry_credentials: Bearer ${{ secrets.GITHUB_TOKEN }}
