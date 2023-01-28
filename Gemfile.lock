@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    makenew-rbgem (2.3.1)
+    makenew-rbgem (2.4.0)
 
 GEM
   remote: https://rubygems.org/
