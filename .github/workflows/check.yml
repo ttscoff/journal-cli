@@ -72,6 +72,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
+          - windows-latest
         ruby:
           - '3.0'
           - '3.1'
@@ -81,6 +82,8 @@ jobs:
             os_name: Linux
           - os: macos-latest
             os_name: macOS
+          - os: windows-latest
+            os_name: Windows
     steps:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -91,11 +94,19 @@ jobs:
         with:
           name: ${{ needs.build.outputs.artifact_name }}
           path: .
+      - name: Find gems
+        uses: tj-actions/glob@v16
+        id: gems
+        with:
+          files: '*.gem'
+      - name: Create main.rb
+        uses: DamianReeves/write-file-action@v1.2
+        with:
+          write-mode: overwrite
+          path: main.rb
+          contents: |
+            require 'makenew-rbgem'
       - name: Install
-        run: gem install *.gem
-      - name: Require
-        run: echo "require '$GEM_REQUIRE_NAME'" > main.rb
-        env:
-          GEM_REQUIRE_NAME: makenew-rbgem
+        run: gem install ${{ steps.gems.outputs.paths }}
       - name: Run
         run: ruby main.rb
