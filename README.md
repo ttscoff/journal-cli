@@ -1,7 +1,7 @@
 # Ruby Gem Project Skeleton
 
 [![RubyGems.org](https://img.shields.io/gem/v/makenew-rbgem)](https://rubygems.org/gems/makenew-rbgem)
-[![GitHub Actions](https://github.com/makenew/rbgem/workflows/main/badge.svg)](https://github.com/makenew/rbgem/actions)
+[![GitHub Actions](https://github.com/makenew/rbgem/actions/workflows/check.yml/badge.svg)](https://github.com/makenew/rbgem/actions/workflows/check.yml)
 
 Project skeleton for a Ruby gem.
 
