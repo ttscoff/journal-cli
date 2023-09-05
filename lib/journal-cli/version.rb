@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module MakenewRbgem
+module Journal
   VERSION = "2.4.1"
 end

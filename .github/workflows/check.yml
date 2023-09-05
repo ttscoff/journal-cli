@@ -105,7 +105,7 @@ jobs:
           write-mode: overwrite
           path: main.rb
           contents: |
-            require 'makenew-rbgem'
+            require 'journal-cli'
       - name: Install
         run: gem install ${{ steps.gems.outputs.paths }}
       - name: Run

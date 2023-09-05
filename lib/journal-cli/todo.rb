@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module MakenewRbgem
+module Journal
   class Todo
     def todo
       "TODO"

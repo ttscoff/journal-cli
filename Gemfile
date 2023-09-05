@@ -2,5 +2,5 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in makenew-rbgem.gemspec.
+# Specify your gem's dependencies in journal-cli.gemspec.
 gemspec
