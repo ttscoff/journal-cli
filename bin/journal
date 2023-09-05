@@ -4,6 +4,12 @@ $LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
 require 'journal-cli'
 
 journal = ARGV.shift
+
+if journal =~ /(-v||--version)/
+  puts "journal v#{Journal::VERSION}"
+  Process.exit 0
+end
+
 date = if ARGV.length.positive?
          Chronic.parse(ARGV.join(' '), future: false)
        else

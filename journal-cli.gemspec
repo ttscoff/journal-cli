@@ -20,12 +20,12 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "#{spec.metadata["source_code_uri"]}/blob/main/CHANGELOG.md"
   spec.metadata["github_repo"] = "git@github.com:ttscoff/journal-cli.git"
 
-  spec.bindir = "bin"
-  spec.executables = spec.files.grep(%r{\A#{spec.bindir}/}) { |f| File.basename(f) }
-
   spec.files = Dir.chdir(File.expand_path('..', __FILE__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.strip =~ %r{^((test|spec|features)/|\.git|buildnotes|.*\.taskpaper)} }
   end
+
+  spec.bindir = "bin"
+  spec.executables = spec.files.grep(%r{\A#{spec.bindir}/}) { |f| File.basename(f) }
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "gem-release", "~> 2.2"
