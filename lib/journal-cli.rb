@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "journal-cli/version"
-require_relative "journal-cli/todo"
+require 'time'
+require 'shellwords'
+require 'json'
+require 'yaml'
+require 'chronic'
+require 'fileutils'
 
-module Journal
-  # TODO
-end
+require_relative "journal-cli/version"
+require_relative "journal-cli/data"
+require_relative "journal-cli/weather"
+require_relative "journal-cli/checkin"

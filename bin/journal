@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
+require 'journal-cli'
+
+journal = ARGV.shift
+date = if ARGV.length.positive?
+         Chronic.parse(ARGV.join(' '), future: false)
+       else
+         Time.now
+       end
+checkin = Journal::Checkin.new(journal, date)
+checkin.go

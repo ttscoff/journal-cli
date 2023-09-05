@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Journal
-  VERSION = "2.4.1"
+  VERSION = "1.0.0"
 end

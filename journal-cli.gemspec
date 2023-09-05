@@ -23,8 +23,9 @@ Gem::Specification.new do |spec|
   spec.bindir = "bin"
   spec.executables = spec.files.grep(%r{\A#{spec.bindir}/}) { |f| File.basename(f) }
 
-  spec.files = Dir["lib/**/*.rb"].reject { |f| f.end_with?("_spec.rb") }
-  spec.files += Dir["[A-Z]*"]
+  spec.files = Dir.chdir(File.expand_path('..', __FILE__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.strip =~ %r{^((test|spec|features)/|\.git|buildnotes|.*\.taskpaper)} }
+  end
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "gem-release", "~> 2.2"
@@ -34,4 +35,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov", "~> 0.21"
   spec.add_development_dependency "simplecov-console", "~> 0.9"
   spec.add_development_dependency "standard", "~> 1.3"
+
+  spec.add_runtime_dependency('chronic', '~> 0.10', '>= 0.10.2')
 end
