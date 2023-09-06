@@ -1,0 +1,6 @@
+= Journal
+
+A command line tool for journaling to JSON, Markdown, and Day One.
+
+
+
