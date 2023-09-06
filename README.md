@@ -128,3 +128,11 @@ Answers will always be written to `~/.local/share/journal/[KEY].json` (where [KE
 
 At present there's no tool for querying the dataset created. You just need to parse the JSON and use your language of choice to extract the data. Numeric entries are stored as numbers, and every entry is timestamped, so you should be able to do some advanced analysis once you have enough data.
 
+### Answering prompts
+
+Questions with numeric answers will have a valid range assigned. Enter just a number within the range and hit return.
+
+Questions with type 'string' or 'text' will save when you hit return. Pressing return without typing anything will leave that answer blank, and it will be ignored when exporting to Markdown or Day One (an empty value will exist in the JSON database).
+
+When using the mutiline type, you'll get an edit field that responds to most control-key navigation and allows insertion and movement. To save a multiline field, press Escape or type CTRL-d.
+
