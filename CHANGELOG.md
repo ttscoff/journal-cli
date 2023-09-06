@@ -1,3 +1,11 @@
+### 1.0.9
+
+2023-09-06 11:58
+
+#### NEW
+
+- If the second argument is a natural language date, use the parsed result instead of the current time for the entry
+
 ### 1.0.8
 
 2023-09-06 11:56
