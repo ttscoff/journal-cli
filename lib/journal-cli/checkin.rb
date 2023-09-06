@@ -1,23 +1,18 @@
 module Journal
   # Main class
   class Checkin
-    attr_reader :key, :date, :data, :config, :journal, :title, :output
+    attr_reader :key, :date, :data, :config, :journal, :sections, :title, :output
 
-    def initialize
-      config = File.expand_path('~/.config/journal/journals.yaml')
-      raise StandardError, 'No journals configured' unless File.exist?(config)
-
-      @config = YAML.load(IO.read(config))
-    end
-
-    def start(journal, date)
+    def initialize(journal, date)
       @key = journal
       @output = []
       @date = date
+      @date.localtime
 
-      raise StandardError, "No journal with key #{@key} found" unless @config['journals'].key? @key
+      raise StandardError, "No journal with key #{@key} found" unless Journal.config['journals'].key? @key
 
-      @journal = @config['journals'][@key]
+      @journal = Journal.config['journals'][@key]
+      @sections = Sections.new(@journal['sections'])
 
       @data = {}
       meridian = @date.hour < 13 ? 'AM' : 'PM'
@@ -44,93 +39,69 @@ module Journal
       @output << "\n---\n"
     end
 
-    def ask_question(q)
-      res = case q['type']
-            when /^(int|num)/i
-              min = q['min'] || 1
-              max = q['max'] || 5
-              get_number(q['prompt'], min: min, max: max)
-            when /^(text|string|line)/i
-              puts q['prompt']
-              add_prompt = q['secondary_prompt'] || nil
-              get_line(q['prompt'], add_prompt: add_prompt)
-            when /^(weather|forecast)/i
-              Weather.new(@config['weather_api'], @config['zip'])
-            when /^multi/
-              puts q['prompt']
-              add_prompt = q['secondary_prompt'] || nil
-              get_lines(q['prompt'], add_prompt: add_prompt)
-            end
-
-      res
-    end
-
     def go
-      results = Data.new(@journal['questions'])
-      @journal['sections'].each do |s|
-        results[s['key']] = {
-          title: s['title'],
-          answers: {}
-        }
-
-        s['questions'].each do |q|
-          if q['key'] =~ /\./
-            res = results[s['key']][:answers]
-            keys = q['key'].split(/\./)
-            keys.each_with_index do |key, i|
-              next if i == keys.count - 1
-
-              res[key] = {} unless res.key?(key)
-              res = res[key]
-            end
-
-            res[keys.last] = ask_question(q)
-          else
-            results[s['key']][:answers][q['key']] = ask_question(q)
-          end
-        end
-      end
-
-      @data = results
-
-      if @journal['dayone']
-        cmd = ['dayone2']
-        cmd << %(-j "#{@journal['journal']}") if @journal.key?('journal')
-        cmd << %(-t #{@journal['tags'].join(' ')}) if @journal.key?('tags')
-        cmd << %(-date "#{@date.strftime('%Y-%m-%d %I:%M %p')}")
-        `echo #{Shellwords.escape(to_markdown(yaml: false, title: true))} | #{cmd.join(' ')} -- new`
-      end
-
-      if @journal['markdown']
-        if @journal['markdown'] =~ /^da(y|ily)/
-          dir = File.expand_path("~/.local/share/journal/entries/#{@key}")
-          FileUtils.mkdir_p(dir) unless File.directory?(dir)
-          filename = "#{@date.strftime('%Y-%m-%d')}.md"
-          target = File.join(dir, filename)
-          if File.exist? target
-            File.open(target, 'a') { |f| f.puts to_markdown(yaml: false, title: true, date: false, time: true) }
-          else
-            File.open(target, 'w') { |f| f.puts to_markdown(yaml: true, title: true, date: false, time: true) }
-          end
-        elsif @journal['markdown'] =~ /^(ind|separate)/
-          dir = File.expand_path("~/.local/share/journal/entries/#{@key}")
-          FileUtils.mkdir_p(dir) unless File.directory?(dir)
-          filename = @date.strftime('%Y-%m-%d_%H:%M.md')
-          File.open(File.join(dir, filename), 'w') { |f| f.puts to_markdown(yaml: true, title: true) }
-        else
-          dir = File.expand_path('~/.local/share/journal/entries/')
-          FileUtils.mkdir_p(dir) unless File.directory?(dir)
-          filename = "#{@key}.md"
-          File.open(File.join(dir, filename), 'a') do |f|
-            f.puts
-            f.puts "## #{@title} #{@date.strftime('%x %X')}"
-            f.puts
-            f.puts to_markdown(yaml: false, title: false)
-          end
-        end
-      end
+      @sections.each { |key, section| @data[key] = section }
 
       save_data
+      save_day_one_entry if @journal['dayone']
+
+      return unless @journal['markdown']
+
+      case @journal['markdown']
+      when /^da(y|ily)/
+        save_daily_markdown
+      when /^(ind|sep)/
+        save_individual_markdown
+      else
+        save_single_markdown
+      end
+    end
+
+    def save_day_one_entry
+      cmd = ['dayone2']
+      cmd << %(-j "#{@journal['journal']}") if @journal.key?('journal')
+      cmd << %(-t #{@journal['tags'].join(' ')}) if @journal.key?('tags')
+      cmd << %(-date "#{@date.strftime('%Y-%m-%d %I:%M %p')}")
+      `echo #{Shellwords.escape(to_markdown(yaml: false, title: true))} | #{cmd.join(' ')} -- new`
+    end
+
+    def save_single_markdown
+      dir = File.expand_path('~/.local/share/journal/entries/')
+      FileUtils.mkdir_p(dir) unless File.directory?(dir)
+      filename = "#{@key}.md"
+      @date.localtime
+      target = File.join(dir, filename)
+      File.open(target, 'a') do |f|
+        f.puts
+        f.puts "## #{@title} #{@date.strftime('%x %X')}"
+        f.puts
+        f.puts to_markdown(yaml: false, title: false)
+      end
+      puts "Saved #{target}"
+    end
+
+    def save_daily_markdown
+      dir = File.expand_path("~/.local/share/journal/entries/#{@key}")
+      FileUtils.mkdir_p(dir) unless File.directory?(dir)
+      @date.localtime
+      filename = "#{@date.strftime('%Y-%m-%d')}.md"
+      target = File.join(dir, filename)
+      if File.exist? target
+        File.open(target, 'a') { |f| f.puts to_markdown(yaml: false, title: true, date: false, time: true) }
+      else
+        File.open(target, 'w') { |f| f.puts to_markdown(yaml: true, title: true, date: false, time: true) }
+      end
+      puts "Saved #{target}"
+    end
+
+    def save_individual_markdown
+      dir = File.expand_path("~/.local/share/journal/entries/#{@key}")
+      FileUtils.mkdir_p(dir) unless File.directory?(dir)
+      @date.localtime
+      filename = @date.strftime('%Y-%m-%d_%H:%M.md')
+      target = File.join(dir, filename)
+      File.open(target, 'w') { |f| f.puts to_markdown(yaml: true, title: true) }
+      puts "Saved #{target}"
     end
 
     def print_answer(prompt, type, key, data)
@@ -154,6 +125,7 @@ module Journal
       @output = []
 
       if yaml
+        @date.localtime
         @output << <<~EOYAML
           ---
           title: #{@title}
@@ -174,21 +146,22 @@ module Journal
         end
       end
 
-      @journal['sections'].each do |s|
-        section s['title']
+      @sections.each do |key, section|
+        answers = section.answers
+        section section.title
 
-        s['questions'].each do |q|
-          if q['key'] =~ /\./
-            res = @data[s['key']][:answers].dup
-            keys = q['key'].split(/\./)
+        section.questions.each do |question|
+          if question.key =~ /\./
+            res = section.answers.dup
+            keys = question.key.split(/\./)
             keys.each_with_index do |key, i|
               next if i == keys.count - 1
 
               res = res[key]
             end
-            print_answer(q['prompt'], q['type'], keys.last, res)
+            print_answer(question.prompt, question.type, keys.last, res)
           else
-            print_answer(q['prompt'], q['type'], q['key'], @data[s['key']][:answers])
+            print_answer(question.prompt, question.type, question.key, section.answers)
           end
         end
       end
@@ -197,6 +170,7 @@ module Journal
     end
 
     def save_data
+      @date.localtime
       db = File.expand_path("~/.local/share/journal/#{@key}.json")
       data = if File.exist?(db)
                JSON.parse(IO.read(db))
@@ -206,57 +180,26 @@ module Journal
       date = @date.utc
       output = {}
 
-      @data.each do |k, v|
-        v[:answers].each do |q, a|
-          if a.is_a? Hash
-            output[q] = {}
-            a.each do |key, value|
-              output[q][key] = case value.class.to_s
-                      when /Weather/
-                        { 'high' => value.data[:high], 'low' => value.data[:low], 'condition' => value.data[:condition] }
-                      else
-                        value
-                      end
+      @data.each do |jk, journal|
+        output[jk] = {}
+        journal.answers.each do |k, v|
+          if v.is_a? Hash
+            output[jk][k] = {}
+            v.each do |key, value|
+              output[jk][k][key] = case value.class.to_s
+                               when /Weather/
+                                 { 'high' => value.data[:high], 'low' => value.data[:low], 'condition' => value.data[:condition] }
+                               else
+                                 value
+                               end
             end
           else
-            output[q] = a
+            output[jk][k] = v
           end
         end
       end
       data << { 'date' => date, 'data' => output }
       File.open(db, 'w') { |f| f.puts JSON.pretty_generate(data) }
-    end
-
-    def get_number(prompt, min: 1, max: 5)
-      puts "#{prompt} (#{min}-#{max})"
-      res = `gum input --placeholder "#{prompt} (#{min}-#{max})"`.strip
-      return nil if res.strip.empty?
-
-      res = res.to_i
-
-      res = get_number(prompt, min: min, max: max) if res < min || res > max
-      res
-    end
-
-    def get_line(prompt, add_prompt: nil)
-      output = []
-      puts prompt
-      line = `gum input --placeholder "#{prompt} (blank to end editing)"`
-      return output.join("\n") if line =~ /^ *$/
-
-      output << line
-      output << get_line(add_prompt, add_prompt: add_prompt) if add_prompt
-      output.join("\n")
-    end
-
-    def get_lines(prompt, add_prompt: nil)
-      output = []
-      line = `gum write --placeholder "#{prompt}" --width 80 --char-limit 0`
-      return output.join("\n") if line.strip.empty?
-
-      output << line
-      output << get_lines(add_prompt, add_prompt: add_prompt) if add_prompt
-      output.join("\n")
     end
   end
 end

@@ -3,44 +3,52 @@
 $LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
 require 'journal-cli'
 
-def usage
-  puts "journal v#{Journal::VERSION}"
-  puts
-  puts 'Usage: journal [type] [date]'
-  puts
-  puts 'Available journal types:'
-  config = Journal::Checkin.new
-  puts(config.config['journals'].keys.map { |k| "- #{k}" })
+module Journal
+  class << self
+    def usage
+      puts "journal v#{Journal::VERSION}"
+      puts
+      puts 'Usage: journal [type] [date]'
+      puts
+      puts 'Available journal types:'
+      config = Journal.config
+      puts(config['journals'].keys.map { |k| "- #{k}" })
+    end
+
+    def run(args)
+      if args.count.zero?
+        puts "No journal specified"
+        usage
+        Process.exit 1
+      end
+
+      case args[0]
+      when /(-v|--version)/
+        puts "journal v#{Journal::VERSION}"
+        Process.exit 0
+      when /(help|-h|--help)/
+        usage
+        Process.exit 0
+      end
+
+      journal = args.shift
+
+      date = if args.length.positive?
+               Chronic.parse(args.join(' '), future: false)
+             else
+               Time.now
+             end
+
+      if Journal.config['journals'].key?(journal)
+        checkin = Journal::Checkin.new(journal, date)
+        checkin.go
+      else
+        puts "Journal #{journal} not found"
+        usage
+        Process.exit 1
+      end
+    end
+  end
 end
 
-if ARGV.count.zero?
-  puts "No journal specified"
-  usage
-  Process.exit 1
-end
-
-case ARGV[0]
-when /(-v|--version)/
-  puts "journal v#{Journal::VERSION}"
-  Process.exit 0
-when /(help|-h|--help)/
-  usage
-  Process.exit 0
-end
-
-journal = ARGV.shift
-
-date = if ARGV.length.positive?
-         Chronic.parse(ARGV.join(' '), future: false)
-       else
-         Time.now
-       end
-checkin = Journal::Checkin.new
-if checkin.config['journals'].key?(journal)
-  checkin.start(journal, date)
-  checkin.go
-else
-  puts "Journal #{journal} not found"
-  usage
-  Process.exit 1
-end
+Journal.run(ARGV)
