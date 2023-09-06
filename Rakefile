@@ -7,7 +7,7 @@ require 'yard'
 Rake::RDocTask.new do |rd|
   rd.main = "README.rdoc"
   rd.rdoc_files.include("README.rdoc", "lib/**/*.rb", "bin/**/*")
-  rd.title = 'Snibbets'
+  rd.title = 'Journal'
 end
 
 YARD::Rake::YardocTask.new do |t|
@@ -33,7 +33,7 @@ desc "Open an interactive ruby console"
 task :console do
   require "irb"
   require "bundler/setup"
-  require "snibbets"
+  require "journal-cli"
   ARGV.clear
   IRB.start
 end
@@ -57,7 +57,7 @@ end
 desc 'Bump incremental version number'
 task :bump, :type do |_, args|
   args.with_defaults(type: 'inc')
-  version_file = 'lib/snibbets/version.rb'
+  version_file = 'lib/journal-cli/version.rb'
   content = IO.read(version_file)
   content.sub!(/VERSION = '(?<major>\d+)\.(?<minor>\d+)\.(?<inc>\d+)(?<pre>\S+)?'/) do
     m = Regexp.last_match

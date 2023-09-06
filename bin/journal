@@ -3,17 +3,30 @@
 $LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
 require 'journal-cli'
 
-journal = ARGV.shift
+raise ArgumentError, 'no journal specified' if ARGV.count.zero?
 
-if journal =~ /(-v||--version)/
+case ARGV[0]
+when /(-v|--version)/
   puts "journal v#{Journal::VERSION}"
   Process.exit 0
+when /(help|-h|--help)/
+  puts "journal v#{Journal::VERSION}"
+  puts
+  puts 'Usage: journal [type] [date]'
+  puts
+  puts 'Available journal types:'
+  config = Journal::Checkin.new
+  puts(config.config['journals'].keys.map { |k| "- #{k}" })
+  Process.exit 0
 end
+
+journal = ARGV.shift
 
 date = if ARGV.length.positive?
          Chronic.parse(ARGV.join(' '), future: false)
        else
          Time.now
        end
-checkin = Journal::Checkin.new(journal, date)
+checkin = Journal::Checkin.new
+checkin.start(journal, date)
 checkin.go
