@@ -3,13 +3,7 @@
 $LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
 require 'journal-cli'
 
-raise ArgumentError, 'no journal specified' if ARGV.count.zero?
-
-case ARGV[0]
-when /(-v|--version)/
-  puts "journal v#{Journal::VERSION}"
-  Process.exit 0
-when /(help|-h|--help)/
+def usage
   puts "journal v#{Journal::VERSION}"
   puts
   puts 'Usage: journal [type] [date]'
@@ -17,6 +11,20 @@ when /(help|-h|--help)/
   puts 'Available journal types:'
   config = Journal::Checkin.new
   puts(config.config['journals'].keys.map { |k| "- #{k}" })
+end
+
+if ARGV.count.zero?
+  puts "No journal specified"
+  usage
+  Process.exit 1
+end
+
+case ARGV[0]
+when /(-v|--version)/
+  puts "journal v#{Journal::VERSION}"
+  Process.exit 0
+when /(help|-h|--help)/
+  usage
   Process.exit 0
 end
 
@@ -28,5 +36,11 @@ date = if ARGV.length.positive?
          Time.now
        end
 checkin = Journal::Checkin.new
-checkin.start(journal, date)
-checkin.go
+if check.config['journals'].key?(journal)
+  checkin.start(journal, date)
+  checkin.go
+else
+  puts "Journal #{journal} not found"
+  usage
+  Process.exit 1
+end

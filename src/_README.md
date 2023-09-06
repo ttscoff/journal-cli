@@ -125,6 +125,8 @@ A journal must contain a `sections` key, and each section must contain a `questi
 
 Once your configuration file is set up, you can just run `journal JOURNAL_KEY` to begin prompting for the answers to the configured questions. 
 
+If a second argument contains a natural language date, the journal entry will be set to that date instead of the current time. For example, `journal mood "yesterday 5pm"` will create a new entry (in the journal configured for `mood`) for yesterday at 5pm.
+
 Answers will always be written to `~/.local/share/journal/[KEY].json` (where [KEY] is the journal key, one data file for each journal). If you've specified `daily` or `individual` Markdown formats, entries will be written to Markdown files in `~/.local/share/journal/entries/[KEY]`, either in a `%Y-%m-%d.md` file (daily), or in timestamped individual files. If `digest` is specified for the `markdown` key, a single file will be created at `~/.local/share/journal/[KEY].md`.
 
 At present there's no tool for querying the dataset created. You just need to parse the JSON and use your language of choice to extract the data. Numeric entries are stored as numbers, and every entry is timestamped, so you should be able to do some advanced analysis once you have enough data.
