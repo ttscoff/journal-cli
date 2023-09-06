@@ -1,121 +1,132 @@
 # journal
 
 [![RubyGems.org](https://img.shields.io/gem/v/journal-cli)](https://rubygems.org/gems/journal-cli)
-[![GitHub Actions](https://github.com/ttscoff/journal-cli/actions/workflows/check.yml/badge.svg)](https://github.com/ttscoff/journal-cli/actions/workflows/check.yml)
 
 A CLI for journaling to structured data, Markdown, and Day One
 
 ## Description
 
-TODO
+The `journal` command reads a journal definition and provides command line prompts to fill it out. The results are stored in a JSON database for each journal, and can optionally output to Markdown (individual files per entry, daily digest, or one large file for the journal).
 
 ## Installation
 
-Add this as a dependency to your project using [Bundler] with
+First, you need [Gum](https://github.com/charmbracelet/gum) installed. The easiest way is with [Homebrew](https://brew.sh/):
 
 ```
-$ bundle add journal-cli
+$ brew install gum
 ```
 
-[bundler]: https://bundler.io/
-
-## Development and Testing
-
-### Quickstart
+Use RubyGems to install journal:
 
 ```
-$ git clone https://github.com/ttscoff/journal-cli.git
-$ cd journal-cli
-$ bundle install
+$ gem install journal-cli
 ```
 
-Run the command below
+If you run into errors, try running with the `--user-install` flag:
 
 ```
-$ bundle exec rake
+$ gem install --user-install journal-cli
 ```
 
-Open an interactive ruby console with
+> I've noticed lately with `asdf` that I have to run `asdf reshim` after installing gems containing binaries.
+
+If you want to use Day One with journal, you'll need to [install the Day One CLI](https://dayoneapp.com/guides/tips-and-tutorials/command-line-interface-cli/).
+
+## Configuration
+
+A config must be created at `~/.config/journal/journals.yaml`:
 
 ```
-$ bundle exec rake
+$ mkdir -p ~/.config/journal
+$ touch ~/.config/journal/journals.yaml
 ```
 
-Primary development tasks are defined as [rake] tasks in the `Rakefile`
-and available via `rake`.
-View them with
+This file contains a YAML definition of your journal. Each journal gets a top-level key, which is what you'll specify it with on the command line. It gets a few settings, and then you define sections containing questions.
 
-```
-$ bundle exec rake -T
-```
+### Weather
 
-[rake]: https://ruby.github.io/rake/
+You can include weather data automatically by setting a question type to 'weather'. In order for this to work, you'll need to define `zip` and `weather_api` keys. `zip` is just your zip code, and `weather_api` is a key from WeatherAPI.com. Sign up [here](https://www.weatherapi.com/) for a free plan, and then visit the [profile page](https://www.weatherapi.com/my/) to see your API key at the top.
 
-### Source code
+### Journal configuration
 
-The [source code] is hosted on GitHub.
-Clone the project with
+Edit the file at `~/.config/journal/journals.yaml` following this structure:
 
-```
-$ git clone git@github.com:ttscoff/journal-cli.git
-```
-
-[source code]: https://github.com/ttscoff/journal-cli
-
-### Requirements
-
-You will need [Ruby] with [Bundler].
-
-Be sure that all commands run under the correct Ruby version, e.g.,
-if using [rbenv], install the correct version with
-
-```
-$ rbenv install
+```yaml
+daily: # journal key, will be used on the command line as `journal daily`
+  dayone: true # Enable or disable Day One integration
+  journal: Journal # Day One journal to add to (if using Day One integration)
+  markdown: daily # Type of Markdown file to create, false to skip (can be daily, individual, or digest)
+  title: Daily Journal # Title for every entry, date will be appended where needed
+  sections: # Required key
+    - title: null # The title for the section. If null, no section header will be created
+      key: journal # The key for the data collected, must be one word, alphanumeric characters and _ only
+      questions: # Required key
+        - prompt: How are you feeling? # The question to ask
+          key: journal # alphanumeric characters and _ only, will be nested in section key
+          type: multiline # The type of entry expected (numeric, string, or multiline)
 ```
 
-Install the development dependencies with
+Keys must be alphanumeric characters and `_` (underscore) only. Titles and questions can be anything, but if they contain a colon (:), you'll need to quote the string.
 
+A more complex configuration file can contain multiple journals with multiple questions defined:
+
+```yaml
+zip: 55987 # Your zip code for weather integration
+weather_api: XXXXXXXXXXXX # Your weatherapi.com API key
+journals: # required key
+  mood: # name of the journal
+    journal: Mood Journal # Optional, Day One journal to add to
+    tags: [checkin] # Optional, array of tags to add to Day One entries
+    markdown: individual # Can be daily or individual, any other value will create a single file
+    dayone: true # true to log entries to Day One, false to skip
+    title: "Mood checkin %M" # The title of the entry. Use %M to insert AM or PM
+    sections: # required key
+      - title: Weather # Title of the section (will create template sections in Day One)
+        key: weather # the key to use in the structured data, will contain all of the answers
+        questions: # required key
+          - prompt: Current weather # The prompt shown on the command line, will also become a header in the journal entries (Markdown, Day One)
+            key: weather.forecast # if a key contains a dot, it will create nested data, e.g. `{ 'weather': { 'forecast': data } }`
+            type: weather # Set this to weather for weather data
+      - title: Health # New section
+        key: health 
+        questions:
+          - prompt: Health rating
+            key: health.rating
+            type: numeric # type can be numeric, string, or multiline
+            min: 1 # Only need min/max definitions on numeric types (defaults 1-5)
+            max: 5
+          - prompt: Health notes
+            key: health.notes
+            type: multiline
+      - title: Journal # New section
+        key: journal
+        questions:
+          - prompt: Daily notes
+            key: notes
+            type: multiline
+  daily: # New journal
+    journal: Journal
+    markdown: daily
+    dayone: true
+    title: Daily Journal
+    sections:
+      - title: null
+        key: journal
+        questions:
+          - prompt: How are you feeling?
+            key: journal
+            type: multiline
 ```
-$ bundle install
-```
 
-[bundler]: https://bundler.io/
-[ruby]: https://www.ruby-lang.org/
-[rbenv]: https://github.com/rbenv/rbenv
+A journal must contain a `sections` key, and each section must contain a `questions` key with an array of questions. Each question must (at minimum) have a `prompt`, `key`, and `type`.
 
-### Publishing
+## Usage
 
-Use [gem release] to release a new version.
+Once your configuration file is set up, you can just run `journal JOURNAL_KEY` to begin prompting for the answers to the configured questions. 
 
-Publishing may be triggered using a [workflow_dispatch on GitHub Actions].
+Answers will always be written to `~/.local/share/journal/[KEY].json` (where [KEY] is the journal key, one data file for each journal). If you've specified `daily` or `individual` Markdown formats, entries will be written to Markdown files in `~/.local/share/journal/entries/[KEY]`, either in a `%Y-%m-%d.md` file (daily), or in timestamped individual files. If `digest` is specified for the `markdown` key, a single file will be created at `~/.local/share/journal/[KEY].md`.
 
-[gem release]: https://github.com/svenfuchs/gem-release
-[workflow_dispatch on github actions]: https://github.com/ttscoff/journal-cli/actions?query=workflow%3Aversion
-
-## GitHub Actions
-
-_GitHub Actions should already be configured: this section is for reference only._
-
-The following repository secrets must be set on [GitHub Actions]:
-
-- `RUBYGEMS_API_KEY`: RubyGems.org token for publishing gems.
-
-These must be set manually.
-
-### Secrets for Optional GitHub Actions
-
-The version and format GitHub actions
-require a user with write access to the repository.
-Set these additional secrets to enable the action:
-
-- `GH_TOKEN`: A personal access token for the user.
-- `GIT_USER_NAME`: The GitHub user's real name.
-- `GIT_USER_EMAIL`: The GitHub user's email.
-- `GPG_PRIVATE_KEY`: The GitHub user's [GPG private key].
-- `GPG_PASSPHRASE`: The GitHub user's GPG passphrase.
-
-[github actions]: https://github.com/features/actions
-[gpg private key]: https://github.com/marketplace/actions/import-gpg#prerequisites
+At present there's no tool for querying the dataset created. You just need to parse the JSON and use your language of choice to extract the data. Numeric entries are stored as numbers, and every entry is timestamped, so you should be able to do some advanced analysis once you have enough data.
 
 ## Contributing
 
