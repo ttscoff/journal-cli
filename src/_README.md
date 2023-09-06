@@ -2,6 +2,7 @@
 
 [![RubyGems.org](https://img.shields.io/gem/v/journal-cli)](https://rubygems.org/gems/journal-cli)
 
+<!--README-->
 A CLI for journaling to structured data, Markdown, and Day One
 
 ## Description
@@ -128,6 +129,7 @@ Answers will always be written to `~/.local/share/journal/[KEY].json` (where [KE
 
 At present there's no tool for querying the dataset created. You just need to parse the JSON and use your language of choice to extract the data. Numeric entries are stored as numbers, and every entry is timestamped, so you should be able to do some advanced analysis once you have enough data.
 
+<!--END README-->
 ## Contributing
 
 Please submit and comment on bug reports and feature requests.
