@@ -49,18 +49,19 @@ You can include weather data automatically by setting a question type to 'weathe
 Edit the file at `~/.config/journal/journals.yaml` following this structure:
 
 ```yaml
-daily: # journal key, will be used on the command line as `journal daily`
-  dayone: true # Enable or disable Day One integration
-  journal: Journal # Day One journal to add to (if using Day One integration)
-  markdown: daily # Type of Markdown file to create, false to skip (can be daily, individual, or digest)
-  title: Daily Journal # Title for every entry, date will be appended where needed
-  sections: # Required key
-    - title: null # The title for the section. If null, no section header will be created
-      key: journal # The key for the data collected, must be one word, alphanumeric characters and _ only
-      questions: # Required key
-        - prompt: How are you feeling? # The question to ask
-          key: journal # alphanumeric characters and _ only, will be nested in section key
-          type: multiline # The type of entry expected (numeric, string, or multiline)
+journals:
+  daily: # journal key, will be used on the command line as `journal daily`
+    dayone: true # Enable or disable Day One integration
+    journal: Journal # Day One journal to add to (if using Day One integration)
+    markdown: daily # Type of Markdown file to create, false to skip (can be daily, individual, or digest)
+    title: Daily Journal # Title for every entry, date will be appended where needed
+    sections: # Required key
+      - title: null # The title for the section. If null, no section header will be created
+        key: journal # The key for the data collected, must be one word, alphanumeric characters and _ only
+        questions: # Required key
+          - prompt: How are you feeling? # The question to ask
+            key: journal # alphanumeric characters and _ only, will be nested in section key
+            type: multiline # The type of entry expected (numeric, string, or multiline)
 ```
 
 Keys must be alphanumeric characters and `_` (underscore) only. Titles and questions can be anything, but if they contain a colon (:), you'll need to quote the string.
