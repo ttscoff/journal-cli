@@ -134,5 +134,5 @@ Questions with numeric answers will have a valid range assigned. Enter just a nu
 
 Questions with type 'string' or 'text' will save when you hit return. Pressing return without typing anything will leave that answer blank, and it will be ignored when exporting to Markdown or Day One (an empty value will exist in the JSON database).
 
-When using the mutiline type, you'll get an edit field that responds to most control-key navigation and allows insertion and movement. To save a multiline field, press Escape or type CTRL-d.
+When using the mutiline type, you'll get an edit field that responds to most control-key navigation and allows insertion and movement. To save a multiline field, type CTRL-d.
 

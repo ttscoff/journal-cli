@@ -1,3 +1,11 @@
+### 1.0.12
+
+2023-09-06 16:43
+
+#### IMPROVED
+
+- Add note about ctrl-d to save multiline input
+
 ### 1.0.11
 
 2023-09-06 16:37
