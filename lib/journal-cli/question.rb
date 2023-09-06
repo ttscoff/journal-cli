@@ -88,6 +88,7 @@ module Journal
     def read_lines(prompt: nil)
       output = []
       puts prompt.nil? ? @prompt : @secondary_prompt
+      puts 'Hit CTRL-d to save'
       line = `gum write --placeholder "#{prompt}" --width 80 --char-limit 0`
       return output.join("\n") if line.strip.empty?
 
