@@ -18,4 +18,3 @@
 
 - Initial journal command
 - Multiple journals, multiple sections
-
