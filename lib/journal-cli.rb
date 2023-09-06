@@ -21,9 +21,35 @@ module Journal
     def config
       unless @config
         config = File.expand_path('~/.config/journal/journals.yaml')
-        raise StandardError, 'No journals configured' unless File.exist?(config)
-
+        unless File.exist?(config)
+          default_config = {
+            'weather_api' => 'XXXXXXXXXXXXXXXXXx',
+            'zip' => 'XXXXX',
+            'journals' => {
+              'demo' => {
+                'dayone' => false,
+                'markdown' => 'single',
+                'title' => '5-minute checkin',
+                'sections' => [
+                  { 'title' => 'Quick checkin',
+                    'key' => 'checkin',
+                    'questions' => [
+                      { 'prompt' => 'What\'s happening?', 'key' => 'journal', 'type' => 'multiline' }
+                    ] }
+                ]
+              }
+            }
+          }
+          File.open(config, 'w') { |f| f.puts(YAML.dump(default_config)) }
+          puts "New configuration written to #{config}, please edit."
+          Process.exit 0
+        end
         @config = YAML.load(IO.read(config))
+
+        if @config['journals'].key?('demo')
+          puts "Demo journal detected, please edit the configuration file at #{config}"
+          Process.exit 1
+        end
       end
 
       @config
