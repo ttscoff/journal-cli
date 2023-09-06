@@ -1,3 +1,12 @@
+### 1.0.4
+
+2023-09-06 09:23
+
+#### NEW
+
+- Initial journal command
+- Multiple journals, multiple sections
+
 ### 1.0.3
 
 2023-09-06 09:10
