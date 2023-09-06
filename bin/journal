@@ -36,7 +36,7 @@ date = if ARGV.length.positive?
          Time.now
        end
 checkin = Journal::Checkin.new
-if check.config['journals'].key?(journal)
+if checkin.config['journals'].key?(journal)
   checkin.start(journal, date)
   checkin.go
 else
