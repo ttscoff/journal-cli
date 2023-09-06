@@ -1,8 +1,0 @@
-Wed, 06 Sep 2023 09:11:58 -0500
-README.rdoc	Wed, 06 Sep 2023 09:11:47 -0500
-lib/journal-cli.rb	Tue, 05 Sep 2023 16:06:35 -0500
-lib/journal-cli/checkin.rb	Wed, 06 Sep 2023 07:45:41 -0500
-lib/journal-cli/data.rb	Tue, 05 Sep 2023 16:07:33 -0500
-lib/journal-cli/version.rb	Wed, 06 Sep 2023 09:11:02 -0500
-lib/journal-cli/weather.rb	Tue, 05 Sep 2023 16:08:03 -0500
-bin/journal	Tue, 05 Sep 2023 16:55:25 -0500
