@@ -1,14 +1,7 @@
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
-require 'rdoc/task'
 require 'standard/rake'
 require 'yard'
-
-Rake::RDocTask.new do |rd|
-  rd.main = "README.rdoc"
-  rd.rdoc_files.include("README.rdoc", "lib/**/*.rb", "bin/**/*")
-  rd.title = 'Journal'
-end
 
 YARD::Rake::YardocTask.new do |t|
  t.files = ['lib/na/*.rb']
