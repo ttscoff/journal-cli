@@ -1,3 +1,11 @@
+### 1.0.11
+
+2023-09-06 16:37
+
+#### IMPROVED
+
+- Write a demo config file for editing
+
 ### 1.0.10
 
 2023-09-06 16:03
