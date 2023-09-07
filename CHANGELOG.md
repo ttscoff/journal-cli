@@ -1,3 +1,12 @@
+### 1.0.16
+
+2023-09-07 11:12
+
+#### IMPROVED
+
+- Use optparse for command line options
+- Completion-friendly list of journals with `journal -l`
+
 ### 1.0.15
 
 2023-09-07 07:57
