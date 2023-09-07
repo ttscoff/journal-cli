@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    journal-cli (1.0.15)
+    journal-cli (1.0.16)
       chronic (~> 0.10, >= 0.10.2)
 
 GEM

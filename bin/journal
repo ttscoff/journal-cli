@@ -2,17 +2,20 @@
 
 $LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
 require 'journal-cli'
+require 'optparse'
 
 module Journal
   class << self
     def usage
-      puts "journal v#{Journal::VERSION}"
-      puts
       puts 'Usage: journal [type] [date]'
       puts
       puts 'Available journal types:'
+      list_journals
+    end
+
+    def list_journals
       config = Journal.config
-      puts(config['journals'].keys.map { |k| "- #{k}" })
+      puts config['journals'].keys
     end
 
     def run(args)
@@ -20,15 +23,6 @@ module Journal
         puts "No journal specified"
         usage
         Process.exit 1
-      end
-
-      case args[0]
-      when /(-v|--version)/
-        puts "journal v#{Journal::VERSION}"
-        Process.exit 0
-      when /(help|-h|--help)/
-        usage
-        Process.exit 0
       end
 
       journal = args.shift
@@ -50,5 +44,30 @@ module Journal
     end
   end
 end
+
+optparse = OptionParser.new do |opts|
+  opts.banner = 'Usage: journal JOURNAL_KEY [NATURAL LANGUAGE DATE]'
+
+  opts.on('-v', '--version', 'Display version') do
+    puts "journal v#{Journal::VERSION}"
+    Process.exit 0
+  end
+
+  opts.on('-l', '--list', 'List available journals') do
+    Journal.list_journals
+    Process.exit 0
+  end
+
+  opts.on('-h', '--help', 'Display help') do
+    puts opts
+    puts
+    puts 'Available journal types:'
+    config = Journal.config
+    puts(config['journals'].keys.map { |k| "- #{k}" })
+    Process.exit 0
+  end
+end
+
+optparse.parse!
 
 Journal.run(ARGV)
