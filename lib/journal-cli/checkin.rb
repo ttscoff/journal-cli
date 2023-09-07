@@ -66,7 +66,14 @@ module Journal
     end
 
     def save_single_markdown
-      dir = File.expand_path('~/.local/share/journal/entries/')
+      dir = if @journal.key?('entries_folder')
+              File.expand_path(@journal['entries_folder'])
+            elsif Journal.config.key?('entries_folder')
+              File.expand_path(Journal.config['entries_folder'])
+            else
+              File.expand_path("~/.local/share/journal/entries")
+            end
+
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
       filename = "#{@key}.md"
       @date.localtime
@@ -81,7 +88,14 @@ module Journal
     end
 
     def save_daily_markdown
-      dir = File.expand_path("~/.local/share/journal/entries/#{@key}")
+      dir = if @journal.key?('entries_folder')
+              File.expand_path(@journal['entries_folder'])
+            elsif Journal.config.key?('entries_folder')
+              File.expand_path(Journal.config['entries_folder'])
+            else
+              File.expand_path("~/.local/share/journal/entries")
+            end
+      dir = File.join(dir, @key)
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
       @date.localtime
       filename = "#{@date.strftime('%Y-%m-%d')}.md"
@@ -95,7 +109,14 @@ module Journal
     end
 
     def save_individual_markdown
-      dir = File.expand_path("~/.local/share/journal/entries/#{@key}")
+      dir = if @journal.key?('entries_folder')
+              File.expand_path(@journal['entries_folder'])
+            elsif Journal.config.key?('entries_folder')
+              File.expand_path(Journal.config['entries_folder'])
+            else
+              File.expand_path("~/.local/share/journal/entries")
+            end
+      dir = File.join(dir, @key)
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
       @date.localtime
       filename = @date.strftime('%Y-%m-%d_%H:%M.md')
@@ -171,7 +192,14 @@ module Journal
 
     def save_data
       @date.localtime
-      db = File.expand_path("~/.local/share/journal/#{@key}.json")
+      dir = if @journal.key?('entries_folder')
+              File.expand_path(@journal['entries_folder'])
+            elsif Journal.config.key?('entries_folder')
+              File.expand_path(Journal.config['entries_folder'])
+            else
+              File.expand_path("~/.local/share/journal")
+            end
+      db = File.join(dir, "#{@key}.json")
       data = if File.exist?(db)
                JSON.parse(IO.read(db))
              else

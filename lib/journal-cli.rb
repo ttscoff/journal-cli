@@ -25,11 +25,13 @@ module Journal
           default_config = {
             'weather_api' => 'XXXXXXXXXXXXXXXXXx',
             'zip' => 'XXXXX',
+            'entries_folder' => '~/.local/share/journal/',
             'journals' => {
               'demo' => {
                 'dayone' => false,
                 'markdown' => 'single',
                 'title' => '5-minute checkin',
+                'entries_folder' => '~/.local/share/journal/',
                 'sections' => [
                   { 'title' => 'Quick checkin',
                     'key' => 'checkin',
