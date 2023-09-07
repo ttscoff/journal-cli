@@ -1,3 +1,11 @@
+### 1.0.14
+
+2023-09-07 07:35
+
+#### FIXED
+
+- Keys nested with dot syntax were doubling
+
 ### 1.0.13
 
 2023-09-07 06:57
