@@ -214,8 +214,6 @@ module Journal
         output[jk] = {}
         journal.answers.each do |k, v|
           if v.is_a? Hash
-            output[jk][k] = {}
-
             v.each do |key, value|
               result = case value.class.to_s
                        when /Weather/
@@ -224,17 +222,15 @@ module Journal
                          value
                        end
               if jk == k
-                output[jk] = result
+                output[jk][key] = result
               else
-                output[jk][k] = result
+                output[jk][k][key] = result
               end
             end
+          elsif jk == k
+            output[jk] = v
           else
-            if jk == k
-              output[jk] = v
-            else
-              output[jk][k] = v
-            end
+            output[jk][k] = v
           end
         end
       end
