@@ -137,7 +137,7 @@ Once your configuration file is set up, you can just run `journal JOURNAL_KEY` t
 
 If a second argument contains a natural language date, the journal entry will be set to that date instead of the current time. For example, `journal mood "yesterday 5pm"` will create a new entry (in the journal configured for `mood`) for yesterday at 5pm.
 
-Answers will always be written to `~/.local/share/journal/[KEY]/[KEY].json` (where [KEY] is the journal key, one data file for each journal). If you've specified a top-level custom path with `entries_folder` in the config, entries will be written to `[top level folder]/[KEY]/entries`. If you've specified a custom path using `entries_folder` in the journal, entries will be written to `[custom folder]/entries`.  
+Answers will always be written to `~/.local/share/journal/[KEY].json` (where [KEY] is the journal key, one data file for each journal). If you've specified a top-level custom path with `entries_folder` in the config, entries will be written to `[top level folder]/[KEY].json`. If you've specified a custom path using `entries_folder` within the journal, entries will be written to `[custom folder]/[KEY].json`.  
 
 If you've specified `daily` or `individual` Markdown formats, entries will be written to Markdown files in `~/.local/share/journal/[KEY]/entries`, either in a `[KEY]-%Y-%m-%d.md` file (daily), or in timestamped individual files. If `digest` is specified for the `markdown` key, a single file will be created at `~/.local/share/journal/[KEY]/entries/[KEY].md` (or a folder defined by `entries_folder`).
 
