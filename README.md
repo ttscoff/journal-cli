@@ -1,4 +1,6 @@
 
+[![RubyGems.org](https://img.shields.io/gem/v/journal-cli)](https://rubygems.org/gems/journal-cli)
+
 A CLI for journaling to structured data, Markdown, and Day One
 
 ## Description
