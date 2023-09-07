@@ -1,3 +1,16 @@
+### 1.0.13
+
+2023-09-07 06:57
+
+#### NEW
+
+- Allow entries_folder setting for top level and individual journals to put JSON and Markdown files anywhere the user wants
+
+#### IMPROVED
+
+- If a custom folder doesn't exist, create it automatically
+- Updated documentatioh
+
 ### 1.0.12
 
 2023-09-06 16:43
