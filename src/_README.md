@@ -42,6 +42,8 @@ $ mkdir -p ~/.config/journal
 $ touch ~/.config/journal/journals.yaml
 ```
 
+A skeleton file will be written the first time Journal is run if the config file doesn't exist.
+
 This file contains a YAML definition of your journal. Each journal gets a top-level key, which is what you'll specify it with on the command line. It gets a few settings, and then you define sections containing questions.
 
 ### Weather
@@ -53,6 +55,9 @@ You can include weather data automatically by setting a question type to 'weathe
 Edit the file at `~/.config/journal/journals.yaml` following this structure:
 
 ```yaml
+# Where to save all journal entries (unless this key is defined inside the journal). 
+# The journal key will be appended to this to keep each journal separate
+entries_folder: ~/.local/share/journal/ 
 journals:
   daily: # journal key, will be used on the command line as `journal daily`
     dayone: true # Enable or disable Day One integration
@@ -70,6 +75,8 @@ journals:
 
 Keys must be alphanumeric characters and `_` (underscore) only. Titles and questions can be anything, but if they contain a colon (:), you'll need to quote the string.
 
+The `entries_folder` key can be set to save JSON and Markdown files to a custom, non-default location. The default is `~/.local/share/journal`. This key can also be used within a journal definition to offer custom save locations on a per-journal basis.
+
 A more complex configuration file can contain multiple journals with multiple questions defined:
 
 ```yaml
@@ -77,6 +84,7 @@ zip: 55987 # Your zip code for weather integration
 weather_api: XXXXXXXXXXXX # Your weatherapi.com API key
 journals: # required key
   mood: # name of the journal
+    entries_folder: ~/Desktop/Journal/mood # Where to save this specific journal's entries
     journal: Mood Journal # Optional, Day One journal to add to
     tags: [checkin] # Optional, array of tags to add to Day One entries
     markdown: individual # Can be daily or individual, any other value will create a single file
@@ -128,7 +136,9 @@ Once your configuration file is set up, you can just run `journal JOURNAL_KEY` t
 
 If a second argument contains a natural language date, the journal entry will be set to that date instead of the current time. For example, `journal mood "yesterday 5pm"` will create a new entry (in the journal configured for `mood`) for yesterday at 5pm.
 
-Answers will always be written to `~/.local/share/journal/[KEY].json` (where [KEY] is the journal key, one data file for each journal). If you've specified `daily` or `individual` Markdown formats, entries will be written to Markdown files in `~/.local/share/journal/entries/[KEY]`, either in a `%Y-%m-%d.md` file (daily), or in timestamped individual files. If `digest` is specified for the `markdown` key, a single file will be created at `~/.local/share/journal/[KEY].md`.
+Answers will always be written to `~/.local/share/journal/[KEY]/[KEY].json` (where [KEY] is the journal key, one data file for each journal). If you've specified a top-level custom path with `entries_folder` in the config, entries will be written to `[top level folder]/[KEY]/entries`. If you've specified a custom path using `entries_folder` in the journal, entries will be written to `[custom folder]/entries`.  
+
+If you've specified `daily` or `individual` Markdown formats, entries will be written to Markdown files in `~/.local/share/journal/[KEY]/entries`, either in a `[KEY]-%Y-%m-%d.md` file (daily), or in timestamped individual files. If `digest` is specified for the `markdown` key, a single file will be created at `~/.local/share/journal/[KEY]/entries/[KEY].md` (or a folder defined by `entries_folder`).
 
 At present there's no tool for querying the dataset created. You just need to parse the JSON and use your language of choice to extract the data. Numeric entries are stored as numbers, and every entry is timestamped, so you should be able to do some advanced analysis once you have enough data.
 

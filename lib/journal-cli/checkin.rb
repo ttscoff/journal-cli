@@ -67,11 +67,11 @@ module Journal
 
     def save_single_markdown
       dir = if @journal.key?('entries_folder')
-              File.expand_path(@journal['entries_folder'])
+              File.join(File.expand_path(@journal['entries_folder']), 'entries')
             elsif Journal.config.key?('entries_folder')
-              File.expand_path(Journal.config['entries_folder'])
+              File.join(File.expand_path(Journal.config['entries_folder']), @key, 'entries')
             else
-              File.expand_path("~/.local/share/journal/entries")
+              File.expand_path('~/.local/share/journal', @key, 'entries')
             end
 
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
@@ -89,16 +89,16 @@ module Journal
 
     def save_daily_markdown
       dir = if @journal.key?('entries_folder')
-              File.expand_path(@journal['entries_folder'])
+              File.join(File.expand_path(@journal['entries_folder']), 'entries')
             elsif Journal.config.key?('entries_folder')
-              File.expand_path(Journal.config['entries_folder'])
+              File.join(File.expand_path(Journal.config['entries_folder']), @key, 'entries')
             else
-              File.expand_path("~/.local/share/journal/entries")
+              File.join(File.expand_path('~/.local/share/journal/entries'), @key, 'entries')
             end
-      dir = File.join(dir, @key)
+
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
       @date.localtime
-      filename = "#{@date.strftime('%Y-%m-%d')}.md"
+      filename = "#{@key}_#{@date.strftime('%Y-%m-%d')}.md"
       target = File.join(dir, filename)
       if File.exist? target
         File.open(target, 'a') { |f| f.puts to_markdown(yaml: false, title: true, date: false, time: true) }
@@ -110,13 +110,14 @@ module Journal
 
     def save_individual_markdown
       dir = if @journal.key?('entries_folder')
-              File.expand_path(@journal['entries_folder'])
+              File.join(File.expand_path(@journal['entries_folder']), 'entries')
             elsif Journal.config.key?('entries_folder')
-              File.expand_path(Journal.config['entries_folder'])
+              File.join(File.expand_path(Journal.config['entries_folder']), @key,
+                        'entries')
             else
-              File.expand_path("~/.local/share/journal/entries")
+              File.join(File.expand_path('~/.local/share/journal'), @key, 'entries')
             end
-      dir = File.join(dir, @key)
+
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
       @date.localtime
       filename = @date.strftime('%Y-%m-%d_%H:%M.md')
@@ -199,6 +200,7 @@ module Journal
             else
               File.expand_path("~/.local/share/journal")
             end
+      FileUtils.mkdir_p(dir) unless File.directory?(dir)
       db = File.join(dir, "#{@key}.json")
       data = if File.exist?(db)
                JSON.parse(IO.read(db))
