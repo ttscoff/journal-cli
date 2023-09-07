@@ -215,20 +215,39 @@ module Journal
         journal.answers.each do |k, v|
           if v.is_a? Hash
             output[jk][k] = {}
+
             v.each do |key, value|
-              output[jk][k][key] = case value.class.to_s
-                               when /Weather/
-                                 { 'high' => value.data[:high], 'low' => value.data[:low], 'condition' => value.data[:condition] }
-                               else
-                                 value
-                               end
+              result = case value.class.to_s
+                       when /Weather/
+                         { 'high' => value.data[:high], 'low' => value.data[:low], 'condition' => value.data[:condition] }
+                       else
+                         value
+                       end
+              if jk == k
+                output[jk] = result
+              else
+                output[jk][k] = result
+              end
             end
           else
-            output[jk][k] = v
+            if jk == k
+              output[jk] = v
+            else
+              output[jk][k] = v
+            end
           end
         end
       end
       data << { 'date' => date, 'data' => output }
+      data.map! do |d|
+        {
+          'date' => d['date'].is_a?(String) ? Time.parse(d['date']) : d['date'],
+          'data' => d['data']
+        }
+      end
+
+      data.sort_by! { |e| e['date'] }
+
       File.open(db, 'w') { |f| f.puts JSON.pretty_generate(data) }
     end
   end
