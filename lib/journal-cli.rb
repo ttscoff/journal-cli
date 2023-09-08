@@ -8,6 +8,7 @@ require 'chronic'
 require 'fileutils'
 
 require_relative 'journal-cli/version'
+require_relative 'journal-cli/color'
 require_relative 'journal-cli/data'
 require_relative 'journal-cli/weather'
 require_relative 'journal-cli/checkin'

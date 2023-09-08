@@ -19,6 +19,14 @@ module Journal
       @title = @journal['title'].sub(/%M/, meridian)
     end
 
+    def notify(string, debug: false)
+      if debug
+        $stderr.puts Color.template("{dw}#{string}{x}")
+      else
+        $stderr.puts Color.template("#{string}{x}")
+      end
+    end
+
     def title(string)
       @output << "\n## #{string}\n" unless string.nil?
     end
@@ -63,16 +71,16 @@ module Journal
       cmd << %(-t #{@journal['tags'].join(' ')}) if @journal.key?('tags')
       cmd << %(-date "#{@date.strftime('%Y-%m-%d %I:%M %p')}")
       `echo #{Shellwords.escape(to_markdown(yaml: false, title: true))} | #{cmd.join(' ')} -- new`
-      puts "Entered into Day One"
+      notify('{bg}Entered into Day One')
     end
 
     def save_single_markdown
       dir = if @journal.key?('entries_folder')
               File.join(File.expand_path(@journal['entries_folder']), 'entries')
             elsif Journal.config.key?('entries_folder')
-              File.join(File.expand_path(Journal.config['entries_folder']), @key, 'entries')
+              File.join(File.expand_path(Journal.config['entries_folder']), @key)
             else
-              File.expand_path('~/.local/share/journal', @key, 'entries')
+              File.expand_path("~/.local/share/journal/#{@key}/entries")
             end
 
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
@@ -85,16 +93,16 @@ module Journal
         f.puts
         f.puts to_markdown(yaml: false, title: false)
       end
-      puts "Saved #{target}"
+      notify "{bg}Saved {bw}#{target}"
     end
 
     def save_daily_markdown
       dir = if @journal.key?('entries_folder')
               File.join(File.expand_path(@journal['entries_folder']), 'entries')
             elsif Journal.config.key?('entries_folder')
-              File.join(File.expand_path(Journal.config['entries_folder']), @key, 'entries')
+              File.join(File.expand_path(Journal.config['entries_folder']), @key)
             else
-              File.join(File.expand_path('~/.local/share/journal/entries'), @key, 'entries')
+              File.join(File.expand_path("~/.local/share/journal/#{@key}/entries"))
             end
 
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
@@ -106,7 +114,7 @@ module Journal
       else
         File.open(target, 'w') { |f| f.puts to_markdown(yaml: true, title: true, date: false, time: true) }
       end
-      puts "Saved #{target}"
+      notify "{bg}Saved {bw}#{target}"
     end
 
     def save_individual_markdown
@@ -246,7 +254,7 @@ module Journal
       data.sort_by! { |e| e['date'] }
 
       File.open(db, 'w') { |f| f.puts JSON.pretty_generate(data) }
-      puts "Saved #{db}"
+      notify "{bg}Saved {bw}#{db}"
     end
   end
 end

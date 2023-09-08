@@ -58,6 +58,11 @@ optparse = OptionParser.new do |opts|
     Process.exit 0
   end
 
+  Color.coloring = $stdout.isatty
+  opts.on('--[no-]color', 'Colorize output') do |c|
+    Color.coloring = c
+  end
+
   opts.on('-h', '--help', 'Display help') do
     puts opts
     puts
