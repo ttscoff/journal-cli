@@ -63,6 +63,7 @@ module Journal
       cmd << %(-t #{@journal['tags'].join(' ')}) if @journal.key?('tags')
       cmd << %(-date "#{@date.strftime('%Y-%m-%d %I:%M %p')}")
       `echo #{Shellwords.escape(to_markdown(yaml: false, title: true))} | #{cmd.join(' ')} -- new`
+      puts "Entered into Day One"
     end
 
     def save_single_markdown
@@ -245,6 +246,7 @@ module Journal
       data.sort_by! { |e| e['date'] }
 
       File.open(db, 'w') { |f| f.puts JSON.pretty_generate(data) }
+      puts "Saved #{db}"
     end
   end
 end
