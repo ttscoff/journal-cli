@@ -1,3 +1,11 @@
+### 1.0.17
+
+2023-09-08 07:21
+
+#### IMPROVED
+
+- More confirmation messages when saving
+
 ### 1.0.16
 
 2023-09-07 11:12
