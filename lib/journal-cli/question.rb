@@ -27,6 +27,8 @@ module Journal
     ## @return     [Number, String] the response based on @type
     ##
     def ask
+      return nil if @prompt.nil?
+
       case @type
       when /^(int|num)/i
         read_number
@@ -36,8 +38,8 @@ module Journal
         Weather.new(Journal.config['weather_api'], Journal.config['zip'])
       when /^multi/
         read_lines
-      else
-        nil
+      when /^date/
+        read_date
       end
     end
 
@@ -57,6 +59,12 @@ module Journal
 
       res = read_number if res < @min || res > @max
       res
+    end
+
+    def read_date(prompt: nil)
+      Journal.notify("{by}#{prompt.nil? ? @prompt : prompt} (natural language)")
+      line = `gum input --placeholder "#{@prompt} (blank to end editing)"`
+      Chronic.parse(line)
     end
 
     ##
