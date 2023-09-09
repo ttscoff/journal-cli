@@ -1,3 +1,16 @@
+### 1.0.18
+
+2023-09-09 12:29
+
+#### IMPROVED
+
+- Include the answers to all questions as YAML front matter when writing individual Markdown files. This allows for tools like [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview) to be used as parsers
+
+#### FIXED
+
+- Daily markdown was being saved to /journal/entries/KEY/entries
+- Missing color library
+
 ### 1.0.17
 
 2023-09-08 07:21

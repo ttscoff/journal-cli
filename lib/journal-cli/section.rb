@@ -16,6 +16,7 @@ module Journal
       @key = section['key']
       @title = section['title']
       @questions = section['questions'].map { |question| Question.new(question) }
+      @questions.delete_if { |q| q.prompt.nil? }
       @answers = {}
       ask_questions
     end

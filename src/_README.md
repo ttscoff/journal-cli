@@ -51,7 +51,7 @@ This file contains a YAML definition of your journal. Each journal gets a top-le
 
 You can include weather data automatically by setting a question type to 'weather'. In order for this to work, you'll need to define `zip` and `weather_api` keys. `zip` is just your zip code, and `weather_api` is a key from WeatherAPI.com. Sign up [here](https://www.weatherapi.com/) for a free plan, and then visit the [profile page](https://www.weatherapi.com/my/) to see your API key at the top.
 
-### Journal configuration
+### Journal Configuration
 
 Edit the file at `~/.config/journal/journals.yaml` following this structure:
 
@@ -130,6 +130,28 @@ journals: # required key
 ```
 
 A journal must contain a `sections` key, and each section must contain a `questions` key with an array of questions. Each question must (at minimum) have a `prompt`, `key`, and `type`.
+
+If a question has a key `secondary_question`, the prompt will be repeated with the secondary question until it's returned empty, answers will be joined together.
+
+### Naming Keys
+
+If you want data stored in a nested object, you can set a question type to `dictionary` and set the prompt to `null` (or just leave the key out), but give it a key that will serve as the parent in the object. Then in the nested questions, give them a key in the dot format `[PARENT_KEY].[CHILD_KEY]`. Section keys automatically nest their children, but if you want to go deeper, you could have a question with the key `health` and type `dictionary`, then have questions with keys like `health.rating` and `health.notes`. If the section key was `status`, the resulting dictionary would look like this in the JSON:
+
+```json
+{
+  "date": "2023-09-08 12:19:40 UTC",
+  "data": {
+    "status": {
+      "health": {
+        "rating": 4,
+        "notes": "Feeling much better today. Still a bit groggy."
+      }
+    }
+  }
+}
+```
+
+If a question has the same key as its parent section, it will be moved up the chain so that you don't get `{ 'journal': { 'journal': 'Journal notes' } }`. You'll just get `{ 'journal': 'Journal notes' }`. This offers a way to organize data with fewer levels of nesting in the output.
 
 ## Usage
 

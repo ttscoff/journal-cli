@@ -54,6 +54,10 @@ module Journal
       }
     end
 
+    def to_s
+      "#{@data[:temp].round} and #{@data[:current_condition]} (#{@data[:high].round}/#{@data[:low].round})"
+    end
+
     def to_markdown
       output = []
 

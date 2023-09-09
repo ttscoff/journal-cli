@@ -17,7 +17,7 @@ module Journal
       @type = question['type']
       @min = question['min']&.to_i || 1
       @max = question['max']&.to_i || 5
-      @prompt = question['prompt']
+      @prompt = question['prompt'] || nil
       @secondary_prompt = question['secondary_prompt'] || nil
     end
 
@@ -27,6 +27,8 @@ module Journal
     ## @return     [Number, String] the response based on @type
     ##
     def ask
+      return nil if @prompt.nil?
+
       case @type
       when /^(int|num)/i
         read_number
@@ -36,8 +38,12 @@ module Journal
         Weather.new(Journal.config['weather_api'], Journal.config['zip'])
       when /^multi/
         read_lines
+      when /^date/
+        read_date
       end
     end
+
+    private
 
     ##
     ## Read a numeric entry
@@ -45,7 +51,7 @@ module Journal
     ## @return     [Number] integer response
     ##
     def read_number
-      puts "#{@prompt} (#{@min}-#{@max})"
+      Journal.notify("{by}#{@prompt} {c}({bw}#{@min}{c}-{bw}#{@max})")
       res = `gum input --placeholder "#{@prompt} (#{@min}-#{@max})"`.strip
       return nil if res.strip.empty?
 
@@ -53,6 +59,12 @@ module Journal
 
       res = read_number if res < @min || res > @max
       res
+    end
+
+    def read_date(prompt: nil)
+      Journal.notify("{by}#{prompt.nil? ? @prompt : prompt} (natural language)")
+      line = `gum input --placeholder "#{@prompt} (blank to end editing)"`
+      Chronic.parse(line)
     end
 
     ##
@@ -66,7 +78,7 @@ module Journal
     ##
     def read_line(prompt: nil)
       output = []
-      puts prompt.nil? ? @prompt : @secondary_prompt
+      Journal.notify("{by}#{prompt.nil? ? @prompt : @secondary_prompt}")
 
       line = `gum input --placeholder "#{@prompt} (blank to end editing)"`
       return output.join("\n") if line =~ /^ *$/
@@ -87,7 +99,7 @@ module Journal
     ##
     def read_lines(prompt: nil)
       output = []
-      puts (prompt.nil? ? @prompt : @secondary_prompt) + ' (CTRL-d to save)'
+      Journal.notify("{by}#{prompt.nil? ? @prompt : @secondary_prompt} {c}({bw}CTRL-d{c} to save)'")
       line = `gum write --placeholder "#{prompt}" --width 80 --char-limit 0`
       return output.join("\n") if line.strip.empty?
 

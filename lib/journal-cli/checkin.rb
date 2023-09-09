@@ -63,16 +63,16 @@ module Journal
       cmd << %(-t #{@journal['tags'].join(' ')}) if @journal.key?('tags')
       cmd << %(-date "#{@date.strftime('%Y-%m-%d %I:%M %p')}")
       `echo #{Shellwords.escape(to_markdown(yaml: false, title: true))} | #{cmd.join(' ')} -- new`
-      puts "Entered into Day One"
+      Journal.notify('{bg}Entered one entry into Day One')
     end
 
     def save_single_markdown
       dir = if @journal.key?('entries_folder')
               File.join(File.expand_path(@journal['entries_folder']), 'entries')
             elsif Journal.config.key?('entries_folder')
-              File.join(File.expand_path(Journal.config['entries_folder']), @key, 'entries')
+              File.join(File.expand_path(Journal.config['entries_folder']), @key)
             else
-              File.expand_path('~/.local/share/journal', @key, 'entries')
+              File.expand_path("~/.local/share/journal/#{@key}/entries")
             end
 
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
@@ -85,16 +85,16 @@ module Journal
         f.puts
         f.puts to_markdown(yaml: false, title: false)
       end
-      puts "Saved #{target}"
+      Journal.notify "{bg}Added new entry to {bw}#{target}"
     end
 
     def save_daily_markdown
       dir = if @journal.key?('entries_folder')
               File.join(File.expand_path(@journal['entries_folder']), 'entries')
             elsif Journal.config.key?('entries_folder')
-              File.join(File.expand_path(Journal.config['entries_folder']), @key, 'entries')
+              File.join(File.expand_path(Journal.config['entries_folder']), @key)
             else
-              File.join(File.expand_path('~/.local/share/journal/entries'), @key, 'entries')
+              File.join(File.expand_path("~/.local/share/journal/#{@key}/entries"))
             end
 
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
@@ -106,7 +106,7 @@ module Journal
       else
         File.open(target, 'w') { |f| f.puts to_markdown(yaml: true, title: true, date: false, time: true) }
       end
-      puts "Saved #{target}"
+      Journal.notify "{bg}Saved daily Markdown to {bw}#{target}"
     end
 
     def save_individual_markdown
@@ -124,7 +124,7 @@ module Journal
       filename = @date.strftime('%Y-%m-%d_%H:%M.md')
       target = File.join(dir, filename)
       File.open(target, 'w') { |f| f.puts to_markdown(yaml: true, title: true) }
-      puts "Saved #{target}"
+      puts "Saved new entry to #{target}"
     end
 
     def print_answer(prompt, type, key, data)
@@ -144,18 +144,33 @@ module Journal
       end
     end
 
+    def weather_to_yaml(answers)
+      data = {}
+      answers.each do |k, v|
+        case v.class.to_s
+        when /Hash/
+          data[k] = weather_to_yaml(v)
+        when /Weather/
+          data[k] = v.to_s
+        else
+          data[k] = v
+        end
+      end
+      data
+    end
+
     def to_markdown(yaml: false, title: false, date: false, time: false)
       @output = []
 
       if yaml
         @date.localtime
-        @output << <<~EOYAML
-          ---
-          title: #{@title}
-          date: #{@date.strftime('%x %X')}
-          ---
+        yaml_data = { 'title' => @title, 'date' => @date.strftime('%x %X')}
+        @data.each do |key, data|
+          yaml_data = yaml_data.merge(weather_to_yaml(data.answers))
+        end
 
-        EOYAML
+        @output << YAML.dump(yaml_data).strip
+        @output << '---'
       end
 
       if title
@@ -199,7 +214,7 @@ module Journal
             elsif Journal.config.key?('entries_folder')
               File.expand_path(Journal.config['entries_folder'])
             else
-              File.expand_path("~/.local/share/journal")
+              File.expand_path('~/.local/share/journal')
             end
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
       db = File.join(dir, "#{@key}.json")
@@ -218,13 +233,18 @@ module Journal
             v.each do |key, value|
               result = case value.class.to_s
                        when /Weather/
-                         { 'high' => value.data[:high], 'low' => value.data[:low], 'condition' => value.data[:condition] }
+                         {
+                           'high' => value.data[:high],
+                           'low' => value.data[:low],
+                           'condition' => value.data[:condition]
+                         }
                        else
                          value
                        end
               if jk == k
                 output[jk][key] = result
               else
+                output[jk][k] ||= {}
                 output[jk][k][key] = result
               end
             end
@@ -246,7 +266,7 @@ module Journal
       data.sort_by! { |e| e['date'] }
 
       File.open(db, 'w') { |f| f.puts JSON.pretty_generate(data) }
-      puts "Saved #{db}"
+      Journal.notify "{bg}Saved {bw}#{db}"
     end
   end
 end

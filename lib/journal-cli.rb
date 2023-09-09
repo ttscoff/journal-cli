@@ -8,6 +8,7 @@ require 'chronic'
 require 'fileutils'
 
 require_relative 'journal-cli/version'
+require_relative 'journal-cli/color'
 require_relative 'journal-cli/data'
 require_relative 'journal-cli/weather'
 require_relative 'journal-cli/checkin'
@@ -18,6 +19,16 @@ require_relative 'journal-cli/question'
 # Main Journal module
 module Journal
   class << self
+    def notify(string, debug: false, exit_code: nil)
+      if debug
+        $stderr.puts "{dw}#{string}{x}".x
+      else
+        $stderr.puts "#{string}{x}".x
+      end
+
+      Process.exit exit_code unless exit_code.nil?
+    end
+
     def config
       unless @config
         config = File.expand_path('~/.config/journal/journals.yaml')
@@ -49,8 +60,7 @@ module Journal
         @config = YAML.load(IO.read(config))
 
         if @config['journals'].key?('demo')
-          puts "Demo journal detected, please edit the configuration file at #{config}"
-          Process.exit 1
+          Journal.notify("{br}Demo journal detected, please edit the configuration file at {bw}#{config}", exit_code: 1)
         end
       end
 
