@@ -135,6 +135,8 @@ module Journal
         hr
       when /^(int|num)/
         @output << "#{prompt}: #{data[key]}  " unless data[key].nil?
+      when /^date/
+        @output << "#{prompt}: #{data[key].strftime('%Y-%m-%d %H:%M')}" unless data[key].nil?
       else
         unless data[key].strip.empty?
           header prompt
