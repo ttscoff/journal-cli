@@ -150,8 +150,12 @@ module Journal
       data = {}
       answers.each do |k, v|
         case v.class.to_s
+        when /String/
+          next
         when /Hash/
           data[k] = weather_to_yaml(v)
+        when /Date/
+          data[k] = v.strftime('%Y-%m-%d %H:%M')
         when /Weather/
           data[k] = v.to_s
         else

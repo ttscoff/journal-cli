@@ -1,3 +1,11 @@
+### 1.0.19
+
+2023-09-11 10:52
+
+#### IMPROVED
+
+- Better output of date types in Markdown formats
+
 ### 1.0.18
 
 2023-09-09 12:29
