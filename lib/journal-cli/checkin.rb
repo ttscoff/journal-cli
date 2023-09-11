@@ -135,6 +135,8 @@ module Journal
         hr
       when /^(int|num)/
         @output << "#{prompt}: #{data[key]}  " unless data[key].nil?
+      when /^date/
+        @output << "#{prompt}: #{data[key].strftime('%Y-%m-%d %H:%M')}" unless data[key].nil?
       else
         unless data[key].strip.empty?
           header prompt
@@ -148,8 +150,12 @@ module Journal
       data = {}
       answers.each do |k, v|
         case v.class.to_s
+        when /String/
+          next
         when /Hash/
           data[k] = weather_to_yaml(v)
+        when /Date/
+          data[k] = v.strftime('%Y-%m-%d %H:%M')
         when /Weather/
           data[k] = v.to_s
         else

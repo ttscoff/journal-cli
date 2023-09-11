@@ -133,6 +133,16 @@ A journal must contain a `sections` key, and each section must contain a `questi
 
 If a question has a key `secondary_question`, the prompt will be repeated with the secondary question until it's returned empty, answers will be joined together.
 
+### Question Types
+
+A question `type` can be one of:
+
+- `text` or `string` will request a single-line string, submitted on return
+- `multiline` for multiline strings (opens a readline editor, use ctrl-d to save)
+- `weather` will just insert current weather data with no prompt
+- `integer` or `number` will request numeric input
+- `date` will request a natural language date which will be parsed into a date object
+
 ### Naming Keys
 
 If you want data stored in a nested object, you can set a question type to `dictionary` and set the prompt to `null` (or just leave the key out), but give it a key that will serve as the parent in the object. Then in the nested questions, give them a key in the dot format `[PARENT_KEY].[CHILD_KEY]`. Section keys automatically nest their children, but if you want to go deeper, you could have a question with the key `health` and type `dictionary`, then have questions with keys like `health.rating` and `health.notes`. If the section key was `status`, the resulting dictionary would look like this in the JSON:
