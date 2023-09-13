@@ -1,3 +1,15 @@
+### 1.0.20
+
+2023-09-12 19:10
+
+#### IMPROVED
+
+- Store all numeric entries as floats, allowing decimal entries on the command line
+
+#### FIXED
+
+- Ensure local time for date objects
+
 ### 1.0.19
 
 2023-09-11 10:52

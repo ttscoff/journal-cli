@@ -155,6 +155,7 @@ module Journal
         when /Hash/
           data[k] = weather_to_yaml(v)
         when /Date/
+          v.localtime
           data[k] = v.strftime('%Y-%m-%d %H:%M')
         when /Weather/
           data[k] = v.to_s
