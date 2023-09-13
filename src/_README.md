@@ -12,12 +12,6 @@ The `journal` command reads a journal definition and provides command line promp
 
 ## Installation
 
-First, you need [Gum](https://github.com/charmbracelet/gum) installed. The easiest way is with [Homebrew](https://brew.sh/):
-
-```
-$ brew install gum
-```
-
 Use RubyGems to install journal:
 
 ```
@@ -32,7 +26,17 @@ $ gem install --user-install journal-cli
 
 > I've noticed lately with `asdf` that I have to run `asdf reshim` after installing gems containing binaries.
 
-If you want to use Day One with journal, you'll need to [install the Day One CLI](https://dayoneapp.com/guides/tips-and-tutorials/command-line-interface-cli/).
+If [Gum](https://github.com/charmbracelet/gum) is installed, it will be used for prettier input prompts and editing. The easiest way is with [Homebrew](https://brew.sh/):
+
+```
+$ brew install gum
+```
+
+If you want to use Day One with Journal, you'll need to [install the Day One CLI](https://dayoneapp.com/guides/tips-and-tutorials/command-line-interface-cli/). It's just one command:
+
+```
+sudo bash /Applications/Day\ One.app/Contents/Resources/install_cli.sh
+```
 
 ## Configuration
 
@@ -146,7 +150,7 @@ A question `type` can be one of:
 
 ### Naming Keys
 
-If you want data stored in a nested object, you can set a question type to `dictionary` and set the prompt to `null` (or just leave the key out), but give it a key that will serve as the parent in the object. Then in the nested questions, give them a key in the dot format `[PARENT_KEY].[CHILD_KEY]`. Section keys automatically nest their children, but if you want to go deeper, you could have a question with the key `health` and type `dictionary`, then have questions with keys like `health.rating` and `health.notes`. If the section key was `status`, the resulting dictionary would look like this in the JSON:
+If you want data stored in a nested object, you can set a question type to `dictionary` and set the prompt to `null` (or just leave the key out), but give it a key that will serve as the parent in the object. Then in the nested questions, give them a key in the dot format `[PARENT_KEY].[CHILD_KEY]`. Section keys automatically nest their questions, but if you want to go deeper, you could have a question with the key `health` and type `dictionary`, then have questions with keys like `health.rating` and `health.notes`. If the section key was `status`, the resulting dictionary would look like this in the JSON:
 
 ```json
 {
