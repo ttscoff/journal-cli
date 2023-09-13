@@ -1,3 +1,11 @@
+### 1.0.21
+
+2023-09-13 11:00
+
+#### IMPROVED
+
+- If gum is installed, continue using it, but no longer require gum to function
+
 ### 1.0.20
 
 2023-09-12 19:10
