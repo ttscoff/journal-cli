@@ -140,7 +140,8 @@ A question `type` can be one of:
 - `text` or `string` will request a single-line string, submitted on return
 - `multiline` for multiline strings (opens a readline editor, use ctrl-d to save)
 - `weather` will just insert current weather data with no prompt
-- `integer` or `number` will request numeric input
+- `number` or `float` will request numeric input, stored as a float (decimal)
+- `integer` will convert numeric input to the nearest integer
 - `date` will request a natural language date which will be parsed into a date object
 
 ### Naming Keys

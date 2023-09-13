@@ -3,7 +3,7 @@
 module Journal
   # Individual question
   class Question
-    attr_reader :key, :type, :min, :max, :prompt, :secondary_prompt
+    attr_reader :key, :type, :min, :max, :prompt, :secondary_prompt, :gum
 
     ##
     ## Initializes the given question.
@@ -19,6 +19,7 @@ module Journal
       @max = question['max']&.to_i || 5
       @prompt = question['prompt'] || nil
       @secondary_prompt = question['secondary_prompt'] || nil
+      @gum = TTY::Which.exist?('gum')
     end
 
     ##
@@ -30,15 +31,17 @@ module Journal
       return nil if @prompt.nil?
 
       case @type
-      when /^(int|num)/i
+      when /^int/i
+        read_number(integer: true)
+      when /^(float|num)/i
         read_number
       when /^(text|string|line)/i
         read_line
       when /^(weather|forecast)/i
         Weather.new(Journal.config['weather_api'], Journal.config['zip'])
-      when /^multi/
+      when /^multi/i
         read_lines
-      when /^date/
+      when /^(date|time)/i
         read_date
       end
     end
@@ -46,24 +49,28 @@ module Journal
     private
 
     ##
-    ## Read a numeric entry
+    ## Read a numeric entry using gum or TTY::Reader
+    ##
+    ## @param      [Boolean] integer  Round result to nearest integer
     ##
     ## @return     [Number] integer response
     ##
-    def read_number
+    ##
+    def read_number(integer: false)
       Journal.notify("{by}#{@prompt} {c}({bw}#{@min}{c}-{bw}#{@max})")
-      res = `gum input --placeholder "#{@prompt} (#{@min}-#{@max})"`.strip
-      return nil if res.strip.empty?
 
-      res = res.to_f
+      res = @gum ? read_number_gum : read_line_tty
+
+      res = integer ? res.to_f.round : res.to_f
 
       res = read_number if res < @min || res > @max
       res
     end
 
     def read_date(prompt: nil)
-      Journal.notify("{by}#{prompt.nil? ? @prompt : prompt} (natural language)")
-      line = `gum input --placeholder "#{@prompt} (blank to end editing)"`
+      prompt ||= @prompt
+      Journal.notify("{by}#{prompt} (natural language)")
+      line = @gum ? read_line_gum(prompt) : read_line_tty
       Chronic.parse(line)
     end
 
@@ -78,9 +85,10 @@ module Journal
     ##
     def read_line(prompt: nil)
       output = []
-      Journal.notify("{by}#{prompt.nil? ? @prompt : @secondary_prompt}")
+      prompt ||= @prompt
+      Journal.notify("{by}#{prompt}")
 
-      line = `gum input --placeholder "#{@prompt} (blank to end editing)"`
+      line = @gum ? read_line_gum(prompt) : read_line_tty
       return output.join("\n") if line =~ /^ *$/
 
       output << line
@@ -99,13 +107,75 @@ module Journal
     ##
     def read_lines(prompt: nil)
       output = []
-      Journal.notify("{by}#{prompt.nil? ? @prompt : @secondary_prompt} {c}({bw}CTRL-d{c} to save)'")
-      line = `gum write --placeholder "#{prompt}" --width 80 --char-limit 0`
+      prompt ||= @prompt
+      Journal.notify("{by}#{prompt} {c}({bw}CTRL-d{c} to save)'")
+      line = @gum ? read_multiline_gum(prompt) : read_mutliline_tty
       return output.join("\n") if line.strip.empty?
 
       output << line
       output << read_lines(prompt: @secondary_prompt) unless @secondary_prompt.nil?
       output.join("\n").strip
+    end
+
+    ##
+    ## Read a numeric entry using gum
+    ##
+    ## @param      [Boolean] integer  Round result to nearest integer
+    ##
+    ## @return     [Number] integer response
+    ##
+    ##
+    def read_number_gum
+      res = `gum input --placeholder "#{@min}-#{@max}"`.strip
+      return nil if res.strip.empty?
+
+      res
+    end
+
+    ##
+    ## Read a single line entry using TTY::Reader
+    ##
+    ## @param      [Boolean] integer  Round result to nearest integer
+    ##
+    ## @return     [Number] integer response
+    ##
+    def read_line_tty
+      reader = TTY::Reader.new
+      res = reader.read_line('>> ')
+      return nil if res.strip.empty?
+
+      res
+    end
+
+    ##
+    ## Read a single line entry using gum
+    ##
+    ## @param      [Boolean] integer  Round result to nearest integer
+    ##
+    ## @return     [Number] integer response
+    ##
+    def read_line_gum(prompt)
+      `gum input --placeholder "#{prompt} (blank to end answer)"`
+    end
+
+    ##
+    ## Read a multiline entry using TTY::Reader
+    ##
+    ## @return     [string] multiline input
+    ##
+    def read_mutliline_tty
+      reader = TTY::Reader.new
+      res = reader.read_multiline
+      res.join("\n")
+    end
+
+    ##
+    ## Read a multiline entry using gum
+    ##
+    ## @return     [string] multiline input
+    ##
+    def read_multiline_gum(prompt)
+      `gum write --placeholder "#{prompt}" --width 80 --char-limit 0`
     end
   end
 end

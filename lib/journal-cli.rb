@@ -7,6 +7,8 @@ require 'yaml'
 require 'chronic'
 require 'fileutils'
 
+require 'tty-which'
+require 'tty-reader'
 require_relative 'journal-cli/version'
 require_relative 'journal-cli/color'
 require_relative 'journal-cli/data'

@@ -27,6 +27,8 @@ Gem::Specification.new do |spec|
   spec.executables   << 'journal'
   spec.require_paths << "lib"
 
+  spec.add_runtime_dependency('tty-which', '~> 0.5', '>= 0.5.0')
+  spec.add_runtime_dependency('tty-reader', '~> 0.9', '>= 0.9.0')
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "gem-release", "~> 2.2"
   spec.add_development_dependency "parse_gemspec-cli", "~> 1.0"
