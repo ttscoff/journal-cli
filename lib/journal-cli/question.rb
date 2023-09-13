@@ -55,7 +55,7 @@ module Journal
       res = `gum input --placeholder "#{@prompt} (#{@min}-#{@max})"`.strip
       return nil if res.strip.empty?
 
-      res = res.to_i
+      res = res.to_f
 
       res = read_number if res < @min || res > @max
       res
