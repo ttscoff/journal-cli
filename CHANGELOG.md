@@ -1,3 +1,11 @@
+### 1.0.22
+
+2023-09-18 10:23
+
+#### IMPROVED
+
+- Removed colon from timestamp of individual entries to better work with Obsidian Sync
+
 ### 1.0.21
 
 2023-09-13 11:00

@@ -32,7 +32,7 @@ $ brew install gum
 If you want to use Day One with Journal, you'll need to [install the Day One CLI](https://dayoneapp.com/guides/tips-and-tutorials/command-line-interface-cli/). It's just one command:
 
 ```
-sudo bash /Applications/Day\ One.app/Contents/Resources/install_cli.sh
+$ sudo bash /Applications/Day\ One.app/Contents/Resources/install_cli.sh
 ```
 
 ## Configuration

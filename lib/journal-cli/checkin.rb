@@ -121,7 +121,7 @@ module Journal
 
       FileUtils.mkdir_p(dir) unless File.directory?(dir)
       @date.localtime
-      filename = @date.strftime('%Y-%m-%d_%H:%M.md')
+      filename = @date.strftime('%Y-%m-%d_%H%M.md')
       target = File.join(dir, filename)
       File.open(target, 'w') { |f| f.puts to_markdown(yaml: true, title: true) }
       puts "Saved new entry to #{target}"
