@@ -3,7 +3,7 @@
 module Journal
   # Individual question
   class Question
-    attr_reader :key, :type, :min, :max, :prompt, :secondary_prompt, :gum
+    attr_reader :key, :type, :min, :max, :prompt, :secondary_prompt, :gum, :condition
 
     ##
     ## Initializes the given question.
@@ -20,6 +20,7 @@ module Journal
       @prompt = question['prompt'] || nil
       @secondary_prompt = question['secondary_prompt'] || nil
       @gum = TTY::Which.exist?('gum')
+      @condition = question.key?('condition') ? question['condition'].parse_condition : true
     end
 
     ##
@@ -27,8 +28,10 @@ module Journal
     ##
     ## @return     [Number, String] the response based on @type
     ##
-    def ask
+    def ask(condition)
       return nil if @prompt.nil?
+
+      return nil unless @condition && condition
 
       case @type
       when /^int/i
@@ -126,6 +129,7 @@ module Journal
     ##
     ##
     def read_number_gum
+      trap('SIGINT') { exit! }
       res = `gum input --placeholder "#{@min}-#{@max}"`.strip
       return nil if res.strip.empty?
 
@@ -140,6 +144,7 @@ module Journal
     ## @return     [Number] integer response
     ##
     def read_line_tty
+      trap('SIGINT') { exit! }
       reader = TTY::Reader.new
       res = reader.read_line('>> ')
       return nil if res.strip.empty?
@@ -155,6 +160,7 @@ module Journal
     ## @return     [Number] integer response
     ##
     def read_line_gum(prompt)
+      trap('SIGINT') { exit! }
       `gum input --placeholder "#{prompt} (blank to end answer)"`
     end
 
@@ -164,6 +170,7 @@ module Journal
     ## @return     [string] multiline input
     ##
     def read_mutliline_tty
+      trap('SIGINT') { exit! }
       reader = TTY::Reader.new
       res = reader.read_multiline
       res.join("\n")
@@ -175,6 +182,7 @@ module Journal
     ## @return     [string] multiline input
     ##
     def read_multiline_gum(prompt)
+      trap('SIGINT') { exit! }
       `gum write --placeholder "#{prompt}" --width 80 --char-limit 0`
     end
   end

@@ -2,7 +2,7 @@
 
 module Journal
   class Section
-    attr_accessor :key, :title, :questions, :answers
+    attr_accessor :key, :title, :questions, :answers, :condition
 
     ##
     ## Initializes the given section.
@@ -15,6 +15,7 @@ module Journal
     def initialize(section)
       @key = section['key']
       @title = section['title']
+      @condition = section.key?('condition') ? section['condition'].parse_condition : true
       @questions = section['questions'].map { |question| Question.new(question) }
       @questions.delete_if { |q| q.prompt.nil? }
       @answers = {}
@@ -38,9 +39,9 @@ module Journal
             res = res[key]
           end
 
-          res[keys.last] = question.ask
+          res[keys.last] = question.ask(@condition)
         else
-          @answers[question.key] = question.ask
+          @answers[question.key] = question.ask(@condition)
         end
       end
     end

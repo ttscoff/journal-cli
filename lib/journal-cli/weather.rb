@@ -54,6 +54,14 @@ module Journal
       }
     end
 
+    def current
+      "#{@data[:temp]} and #{@data[:current_condition]}"
+    end
+
+    def forecast
+      "#{@data[:condition]} #{@data[:high]}/#{@data[:low]}"
+    end
+
     def to_s
       "#{@data[:temp].round} and #{@data[:current_condition]} (#{@data[:high].round}/#{@data[:low].round})"
     end
@@ -61,8 +69,8 @@ module Journal
     def to_markdown
       output = []
 
-      output << "Forecast for #{@data[:day]}: #{@data[:condition]} #{@data[:high]}/#{@data[:low]}  "
-      output << "Currently: #{@data[:temp]} and #{@data[:current_condition]}"
+      output << "Forecast for #{@data[:day]}: #{forecast}  "
+      output << "Currently: #{current}"
       output << ''
 
       # Hours

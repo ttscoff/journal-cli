@@ -11,6 +11,7 @@ require 'tty-which'
 require 'tty-reader'
 require_relative 'journal-cli/version'
 require_relative 'journal-cli/color'
+require_relative 'journal-cli/string'
 require_relative 'journal-cli/data'
 require_relative 'journal-cli/weather'
 require_relative 'journal-cli/checkin'
@@ -21,6 +22,8 @@ require_relative 'journal-cli/question'
 # Main Journal module
 module Journal
   class << self
+    attr_accessor :date
+
     def notify(string, debug: false, exit_code: nil)
       if debug
         $stderr.puts "{dw}#{string}{x}".x
