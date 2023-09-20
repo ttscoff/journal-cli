@@ -3,10 +3,10 @@ module Journal
   class Checkin
     attr_reader :key, :date, :data, :config, :journal, :sections, :title, :output
 
-    def initialize(journal, date)
+    def initialize(journal)
       @key = journal
       @output = []
-      @date = date
+      @date = Journal.date
       @date.localtime
 
       raise StandardError, "No journal with key #{@key} found" unless Journal.config['journals'].key? @key
@@ -36,7 +36,7 @@ module Journal
     end
 
     def hr
-      @output << "\n---\n"
+      @output << "\n* * * * * *\n"
     end
 
     def go
@@ -58,6 +58,11 @@ module Journal
     end
 
     def save_day_one_entry
+      unless TTY::Which.exist?('dayone2')
+        Journal.notify('{br}Day One CLI not installed, no Day One entry created')
+        return
+      end
+      @date.localtime
       cmd = ['dayone2']
       cmd << %(-j "#{@journal['journal']}") if @journal.key?('journal')
       cmd << %(-t #{@journal['tags'].join(' ')}) if @journal.key?('tags')
@@ -128,11 +133,17 @@ module Journal
     end
 
     def print_answer(prompt, type, key, data)
+      return if data.nil? || !data.key?(key)
+
       case type
       when /^(weather|forecast)/
         header prompt
-        @output << data[key].to_markdown
-        hr
+        @output << case type
+                   when /current$/
+                     data[key].current
+                   else
+                     data[key].to_markdown
+                   end
       when /^(int|num)/
         @output << "#{prompt}: #{data[key]}  " unless data[key].nil?
       when /^date/
@@ -158,7 +169,14 @@ module Journal
           v.localtime
           data[k] = v.strftime('%Y-%m-%d %H:%M')
         when /Weather/
-          data[k] = v.to_s
+          data[k] = case k
+                    when /current$/
+                      v.current
+                    when /forecast$/
+                      data[k] = v.forecast
+                    else
+                      data[k] = v.to_s
+                    end
         else
           data[k] = v
         end
@@ -240,11 +258,18 @@ module Journal
             v.each do |key, value|
               result = case value.class.to_s
                        when /Weather/
-                         {
-                           'high' => value.data[:high],
-                           'low' => value.data[:low],
-                           'condition' => value.data[:condition]
-                         }
+                         if key =~ /current$/
+                           {
+                             'temp' => value.data[:temp],
+                             'condition' => value.data[:current_condition]
+                           }
+                         else
+                           {
+                             'high' => value.data[:high],
+                             'low' => value.data[:low],
+                             'condition' => value.data[:condition]
+                           }
+                         end
                        else
                          value
                        end

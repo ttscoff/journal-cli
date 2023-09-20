@@ -4,6 +4,8 @@ $LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
 require 'journal-cli'
 require 'optparse'
 
+trap('SIGINT') { exit! }
+
 module Journal
   class << self
     def usage
@@ -33,8 +35,10 @@ module Journal
                Time.now
              end
 
+      Journal.date = date
+
       if Journal.config['journals'].key?(journal)
-        checkin = Journal::Checkin.new(journal, date)
+        checkin = Journal::Checkin.new(journal)
         checkin.go
       else
         puts "Journal #{journal} not found"

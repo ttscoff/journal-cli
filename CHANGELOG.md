@@ -1,3 +1,16 @@
+### 1.0.23
+
+2023-09-20 08:30
+
+#### NEW
+
+- Question types weather.forecast and weather.current allow more specific weather entry types
+- Time-based conditions for questions and sections (`condition: before noon` or `condition: < 12pm`)
+
+#### FIXED
+
+- Test for existence of dayone2 binary before attempting to write a Day One entry, provide error message
+
 ### 1.0.22
 
 2023-09-18 10:23
