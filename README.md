@@ -52,6 +52,10 @@ This file contains a YAML definition of your journal. Each journal gets a top-le
 
 You can include weather data automatically by setting a question type to 'weather'. In order for this to work, you'll need to define `zip` and `weather_api` keys. `zip` is just your zip code, and `weather_api` is a key from WeatherAPI.com. Sign up [here](https://www.weatherapi.com/) for a free plan, and then visit the [profile page](https://www.weatherapi.com/my/) to see your API key at the top.
 
+If a question type is set to `weather.forecast`, only the predicted condition, high, and low will be included in the JSON data for the question. A full printout of hourly temps will be included in the Markdown/Day One output.
+
+If the question type is `weather.current`, only the current condition and temperature will be recorded to the JSON, and a string containing "[TEMP] and [CONDITION]" (e.g. "64 and Sunny") will be recorded to Markdown/Day One for the question.
+
 ### Journal Configuration
 
 Edit the file at `~/.config/journal/journals.yaml` following this structure:
@@ -96,9 +100,12 @@ journals: # required key
       - title: Weather # Title of the section (will create template sections in Day One)
         key: weather # the key to use in the structured data, will contain all of the answers
         questions: # required key
-          - prompt: Current weather # The prompt shown on the command line, will also become a header in the journal entries (Markdown, Day One)
+          - prompt: Current Weather
+            key: weather.current
+            type: weather.current
+          - prompt: Weather Forecast # The prompt shown on the command line, will also become a header in the journal entries (Markdown, Day One)
             key: weather.forecast # if a key contains a dot, it will create nested data, e.g. `{ 'weather': { 'forecast': data } }`
-            type: weather # Set this to weather for weather data
+            type: weather.forecast # Set this to weather for weather data
       - title: Health # New section
         key: health 
         questions:
@@ -141,9 +148,17 @@ A question `type` can be one of:
 - `text` or `string` will request a single-line string, submitted on return
 - `multiline` for multiline strings (opens a readline editor, use ctrl-d to save)
 - `weather` will just insert current weather data with no prompt
+  * `weather.forecast` will insert just the forecast
+  * `weather.current` will insert just the current temperature and condition
 - `number` or `float` will request numeric input, stored as a float (decimal)
 - `integer` will convert numeric input to the nearest integer
 - `date` will request a natural language date which will be parsed into a date object
+
+### Conditional Questions
+
+You can have a question only show up based on conditions. Currently the only condition is time based. Just add a key called `condition` to the question definition, then include a natural language string like `before noon` or `after 3pm`. If the condition is matched, then the question will be displayed, otherwise it will be skipped and its data entry in the JSON will be null.
+
+Conditions can be applied to individual questions, or to entire sections, depending on where the `condition` key is placed.
 
 ### Naming Keys
 
