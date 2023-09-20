@@ -1,3 +1,11 @@
+### 1.0.25
+
+2023-09-20 09:40
+
+#### FIXED
+
+- Coloring of min/max on numeric questions
+
 ### 1.0.24
 
 2023-09-20 09:12

@@ -60,7 +60,7 @@ module Journal
     ##
     ##
     def read_number(integer: false)
-      Journal.notify("{by}#{@prompt} {c}({bw}#{@min}{c}-{bw}#{@max})")
+      Journal.notify("{by}#{@prompt} {xc}({bw}#{@min}{xc}-{bw}#{@max}{xc})")
 
       res = @gum ? read_number_gum : read_line_tty
 
