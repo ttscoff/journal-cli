@@ -133,7 +133,7 @@ module Journal
     end
 
     def print_answer(prompt, type, key, data)
-      return if data.nil? || !data.key?(key)
+      return if data.nil? || !data.key?(key) || data[key].nil?
 
       case type
       when /^(weather|forecast)/

@@ -1,3 +1,11 @@
+### 1.0.26
+
+2023-09-20 19:18
+
+#### FIXED
+
+- Nil entry error on conditional questions
+
 ### 1.0.25
 
 2023-09-20 09:40
