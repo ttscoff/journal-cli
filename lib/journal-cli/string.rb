@@ -10,17 +10,20 @@ class ::String
     now = Journal.date
     m = condition.match(time_rx)
     time = Chronic.parse(m['time'])
+    now.localtime
+    time.localtime
+    time_of_day = Time.parse("#{now.strftime('%Y-%m-%d')} #{time.strftime('%H:%M')}")
     Journal.notify("{br}Invalid time string in question (#{m['time']})", exit_code: 4) unless time
 
     case m['comp']
     when /^<=$/
-      now <= time
+      now <= time_of_day
     when /^(<|bef)/i
-      now < time
+      now < time_of_day
     when /^>=/
-      now >= time
+      now >= time_of_day
     when /^(>|aft)/i
-      now > time
+      now > time_of_day
     end
     # TODO: Other condition types
   end
