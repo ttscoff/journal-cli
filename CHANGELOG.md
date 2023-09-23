@@ -1,3 +1,11 @@
+### 1.0.27
+
+2023-09-23 08:03
+
+#### FIXED
+
+- Time comparisons for past entries failing when using a past date for entry
+
 ### 1.0.26
 
 2023-09-20 19:18
