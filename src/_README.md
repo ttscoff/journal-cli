@@ -59,6 +59,8 @@ If a question type is set to `weather.forecast`, only the predicted condition, h
 
 If the question type is `weather.current`, only the current condition and temperature will be recorded to the JSON, and a string containing "[TEMP] and [CONDITION]" (e.g. "64 and Sunny") will be recorded to Markdown/Day One for the question.
 
+If the question type is `weather.moon`, only the moon phase will be output. Moon phase is also included in `weather.forecast` JSON and Markdown output.
+
 ### Journal Configuration
 
 Edit the file at `~/.config/journal/journals.yaml` following this structure:
