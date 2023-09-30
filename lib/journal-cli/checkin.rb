@@ -136,11 +136,13 @@ module Journal
       return if data.nil? || !data.key?(key) || data[key].nil?
 
       case type
-      when /^(weather|forecast)/
+      when /^(weather|forecast|moon)/
         header prompt
         @output << case type
                    when /current$/
                      data[key].current
+                   when /moon$/
+                     "Moon phase: #{data[key].moon}"
                    else
                      data[key].to_markdown
                    end
@@ -174,6 +176,8 @@ module Journal
                       v.current
                     when /forecast$/
                       data[k] = v.forecast
+                    when /moon(_?phase)?$/
+                      data[k] = v.moon
                     else
                       data[k] = v.to_s
                     end
@@ -258,17 +262,23 @@ module Journal
             v.each do |key, value|
               result = case value.class.to_s
                        when /Weather/
-                         if key =~ /current$/
-                           {
-                             'temp' => value.data[:temp],
-                             'condition' => value.data[:current_condition]
-                           }
-                         else
-                           {
-                             'high' => value.data[:high],
-                             'low' => value.data[:low],
-                             'condition' => value.data[:condition]
-                           }
+                        case key
+                        when /current$/
+                          {
+                            'temp' => value.data[:temp],
+                            'condition' => value.data[:current_condition]
+                          }
+                        when /moon(_?phase)?$/
+                          {
+                            'phase' => value.data[:moon_phase]
+                          }
+                        else
+                          {
+                            'high' => value.data[:high],
+                            'low' => value.data[:low],
+                            'condition' => value.data[:condition],
+                            'moon_phase' => value.data[:moon_phase]
+                          }
                          end
                        else
                          value

@@ -5,19 +5,34 @@ module Journal
     attr_reader :data
 
     def initialize(api, zip)
-      res = `curl -SsL 'http://api.weatherapi.com/v1/forecast.json?key=#{api}&q=#{zip}&aqi=no'`
+      Journal.date.localtime
+      if Journal.date.strftime('%Y-%m-%d') == Time.now.strftime('%Y-%m-%d')
+        res = `curl -SsL 'http://api.weatherapi.com/v1/forecast.json?key=#{api}&q=#{zip}&aqi=no'`
+      else
+        res = `curl -SsL 'http://api.weatherapi.com/v1/history.json?key=#{api}&q=#{zip}&aqi=no&dt=#{Journal.date.strftime('%Y-%m-%d')}'`
+      end
+
       data = JSON.parse(res)
 
       raise StandardError, 'invalid JSON response' if data.nil?
 
-      raise StandardError, 'missing conditions' unless data['current']
-
-      curr_temp = data['current']['temp_f']
-      curr_condition = data['current']['condition']['text']
-
       raise StandardError, 'mising forecast' unless data['forecast']
 
+      if Journal.date.strftime('%Y-%m-%d') == Time.now.strftime('%Y-%m-%d')
+        raise StandardError, 'missing conditions' unless data['current']
+
+        curr_temp = data['current']['temp_f']
+        curr_condition = data['current']['condition']['text']
+      else
+        time = Journal.date.strftime('%Y-%m-%d %H:00')
+        hour = data['forecast']['forecastday'][0]['hour'].filter { |h| h['time'].to_s =~ /#{time}/ }.first
+        curr_temp = hour['temp_f']
+        curr_condition = hour['condition']['text']
+      end
+
       forecast = data['forecast']['forecastday'][0]
+
+      moon_phase = forecast['astro']['moon_phase']
 
       day = forecast['date']
       high = forecast['day']['maxtemp_f']
@@ -42,16 +57,22 @@ module Journal
         temp: curr_temp,
         condition: condition,
         current_condition: curr_condition,
-        temps: temps
+        temps: temps,
+        moon_phase: moon_phase
       }
     end
 
     def to_data
       {
-        high: high,
-        low: low,
-        condition: curr_condition
+        high: @data[:high],
+        low: @data[:low],
+        condition: @data[:current_condition],
+        moon_phase: @data[:moon_phase]
       }
+    end
+
+    def moon
+      @data[:moon_phase]
     end
 
     def current
@@ -70,7 +91,8 @@ module Journal
       output = []
 
       output << "Forecast for #{@data[:day]}: #{forecast}  "
-      output << "Currently: #{current}"
+      output << "Currently: #{current}  "
+      output << "Moon Phase: #{moon}  "
       output << ''
 
       # Hours
