@@ -1,3 +1,12 @@
+### 1.0.28
+
+2023-09-30 11:01
+
+#### IMPROVED
+
+- If creating an entry for a past date, get the historical weather for that date
+- Add weather.moon type for getting moon phase, and include moon_phase in general weather data
+
 ### 1.0.27
 
 2023-09-23 08:03
