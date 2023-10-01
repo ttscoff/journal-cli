@@ -40,6 +40,7 @@ module Journal
         unless File.exist?(config)
           default_config = {
             'weather_api' => 'XXXXXXXXXXXXXXXXXx',
+            'weather_deg' => 'F',
             'zip' => 'XXXXX',
             'entries_folder' => '~/.local/share/journal/',
             'journals' => {
