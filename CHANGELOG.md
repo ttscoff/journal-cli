@@ -1,3 +1,11 @@
+### 1.0.29
+
+2023-10-01 15:24
+
+#### IMPROVED
+
+- Config option `temp_in` can be set to `c` or `f` to control what scale temps are recorded in
+
 ### 1.0.28
 
 2023-09-30 11:01
