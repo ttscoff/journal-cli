@@ -4,7 +4,7 @@ module Journal
   class Weather
     attr_reader :data
 
-    def initialize(api, zip)
+    def initialize(api, zip, temp_in)
       Journal.date.localtime
       if Journal.date.strftime('%Y-%m-%d') == Time.now.strftime('%Y-%m-%d')
         res = `curl -SsL 'http://api.weatherapi.com/v1/forecast.json?key=#{api}&q=#{zip}&aqi=no'`
@@ -18,15 +18,17 @@ module Journal
 
       raise StandardError, 'mising forecast' unless data['forecast']
 
+      temp_key = temp_in =~ /^c/ ? 'temp_c' : 'temp_f'
+
       if Journal.date.strftime('%Y-%m-%d') == Time.now.strftime('%Y-%m-%d')
         raise StandardError, 'missing conditions' unless data['current']
 
-        curr_temp = data['current']['temp_f']
+        curr_temp = data['current'][temp_key]
         curr_condition = data['current']['condition']['text']
       else
         time = Journal.date.strftime('%Y-%m-%d %H:00')
         hour = data['forecast']['forecastday'][0]['hour'].filter { |h| h['time'].to_s =~ /#{time}/ }.first
-        curr_temp = hour['temp_f']
+        curr_temp = hour[temp_key]
         curr_condition = hour['condition']['text']
       end
 
@@ -35,19 +37,19 @@ module Journal
       moon_phase = forecast['astro']['moon_phase']
 
       day = forecast['date']
-      high = forecast['day']['maxtemp_f']
-      low = forecast['day']['mintemp_f']
+      high = temp_in =~ /^c/ ? forecast['day']['maxtemp_c'] : forecast['day']['maxtemp_f']
+      low = temp_in =~ /^c/ ? forecast['day']['mintemp_c'] : forecast['day']['mintemp_f']
       condition = forecast['day']['condition']['text']
 
       hours = forecast['hour']
       temps = [
-        { temp: hours[8]['temp_f'], condition: hours[8]['condition']['text'] },
-        { temp: hours[10]['temp_f'], condition: hours[10]['condition']['text'] },
-        { temp: hours[12]['temp_f'], condition: hours[12]['condition']['text'] },
-        { temp: hours[14]['temp_f'], condition: hours[14]['condition']['text'] },
-        { temp: hours[16]['temp_f'], condition: hours[16]['condition']['text'] },
-        { temp: hours[18]['temp_f'], condition: hours[18]['condition']['text'] },
-        { temp: hours[19]['temp_f'], condition: hours[20]['condition']['text'] }
+        { temp: hours[8][temp_key], condition: hours[8]['condition']['text'] },
+        { temp: hours[10][temp_key], condition: hours[10]['condition']['text'] },
+        { temp: hours[12][temp_key], condition: hours[12]['condition']['text'] },
+        { temp: hours[14][temp_key], condition: hours[14]['condition']['text'] },
+        { temp: hours[16][temp_key], condition: hours[16]['condition']['text'] },
+        { temp: hours[18][temp_key], condition: hours[18]['condition']['text'] },
+        { temp: hours[19][temp_key], condition: hours[20]['condition']['text'] }
       ]
 
       @data = {
