@@ -41,7 +41,7 @@ module Journal
       when /^(text|string|line)/i
         read_line
       when /^(weather|forecast)/i
-        Weather.new(Journal.config['weather_api'], Journal.config['zip'])
+        Weather.new(Journal.config['weather_api'], Journal.config['zip'], Journal.config['temp_in'])
       when /^multi/i
         read_lines
       when /^(date|time)/i
