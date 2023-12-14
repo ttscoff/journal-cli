@@ -138,7 +138,6 @@ module Journal
       case type
       when /^(weather|forecast|moon)/
         header prompt
-        puts type
         @output << case type
                    when /current$/
                      data[key].current

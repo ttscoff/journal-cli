@@ -38,6 +38,12 @@ If you want to use Day One with Journal, you'll need to [install the Day One CLI
 $ sudo bash /Applications/Day\ One.app/Contents/Resources/install_cli.sh
 ```
 
+## Usage
+
+```
+@cli(bundle exec bin/journal -h)
+```
+
 ## Configuration
 
 A config must be created at `~/.config/journal/journals.yaml`:
