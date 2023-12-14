@@ -43,6 +43,12 @@ Usage: journal JOURNAL_KEY [NATURAL LANGUAGE DATE]
     -l, --list                       List available journals
         --[no-]color                 Colorize output
     -h, --help                       Display help
+
+Available journal types:
+- checkin
+- mood
+- daily
+- test
 ```
 
 ## Configuration
