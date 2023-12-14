@@ -35,6 +35,22 @@ If you want to use Day One with Journal, you'll need to [install the Day One CLI
 $ sudo bash /Applications/Day\ One.app/Contents/Resources/install_cli.sh
 ```
 
+## Usage
+
+```
+Usage: journal JOURNAL_KEY [NATURAL LANGUAGE DATE]
+    -v, --version                    Display version
+    -l, --list                       List available journals
+        --[no-]color                 Colorize output
+    -h, --help                       Display help
+
+Available journal types:
+- checkin
+- mood
+- daily
+- test
+```
+
 ## Configuration
 
 A config must be created at `~/.config/journal/journals.yaml`:
