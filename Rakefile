@@ -59,7 +59,7 @@ task :bump, :type do |_, args|
   args.with_defaults(type: "inc")
   version_file = "lib/journal-cli/version.rb"
   content = IO.read(version_file)
-  content.sub!(/VERSION = '(?<major>\d+)\.(?<minor>\d+)\.(?<inc>\d+)(?<pre>\S+)?'/) do
+  content.sub!(/VERSION = ["'](?<major>\d+)\.(?<minor>\d+)\.(?<inc>\d+)(?<pre>\S+)?["']/) do
     m = Regexp.last_match
     major = m["major"].to_i
     minor = m["minor"].to_i
