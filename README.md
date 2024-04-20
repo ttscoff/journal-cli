@@ -52,6 +52,10 @@ This file contains a YAML definition of your journal. Each journal gets a top-le
 
 You can include weather data automatically by setting a question type to 'weather'. In order for this to work, you'll need to define `zip` and `weather_api` keys. `zip` is just your zip code, and `weather_api` is a key from WeatherAPI.com. Sign up [here](https://www.weatherapi.com/) for a free plan, and then visit the [profile page](https://www.weatherapi.com/my/) to see your API key at the top.
 
+> Zip codes beginning with zero (0) must be quoted. Use:
+>
+>    zip: '01001'
+
 You can optionally set the key `temp_in:` to `f` or `c` to control what scale is used for temperatures.
 
 If a question type is set to `weather.forecast`, only the predicted condition, high, and low will be included in the JSON data for the question. A full printout of hourly temps will be included in the Markdown/Day One output.

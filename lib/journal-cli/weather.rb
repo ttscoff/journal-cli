@@ -16,7 +16,7 @@ module Journal
 
       raise StandardError, 'invalid JSON response' if data.nil?
 
-      raise StandardError, 'mising forecast' unless data['forecast']
+      raise StandardError, 'missing forecast' unless data['forecast']
 
       temp_key = temp_in =~ /^c/ ? 'temp_c' : 'temp_f'
 
