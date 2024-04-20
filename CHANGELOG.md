@@ -1,3 +1,15 @@
+### 1.0.32
+
+2024-04-20 13:43
+
+#### IMPROVED
+
+- Added note to README that zip codes with leading zero must be quoted
+
+#### FIXED
+
+- Spelling error in weather exception
+
 ### 1.0.31
 
 2023-12-14 09:12

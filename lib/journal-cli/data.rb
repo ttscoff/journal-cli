@@ -13,7 +13,7 @@ module Journal
     def to_data
       output = {}
       @questions.each do |q|
-        output[q['key']] = self[q['key']]
+        output[q["key"]] = self[q["key"]]
       end
       output
     end

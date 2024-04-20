@@ -1,19 +1,19 @@
-require 'bundler/gem_tasks'
-require 'rspec/core/rake_task'
-require 'rdoc/task'
-require 'standard/rake'
-require 'yard'
+require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+require "rdoc/task"
+require "standard/rake"
+require "yard"
 
 Rake::RDocTask.new do |rd|
   rd.main = "README.rdoc"
   rd.rdoc_files.include("README.rdoc", "lib/**/*.rb", "bin/**/*")
-  rd.title = 'Journal'
+  rd.title = "Journal"
 end
 
 YARD::Rake::YardocTask.new do |t|
- t.files = ['lib/journal-cli/*.rb']
- t.options = ['--markup-provider=redcarpet', '--markup=markdown', '--no-private', '-p', 'yard_templates']
- # t.stats_options = ['--list-undoc']
+  t.files = ["lib/journal-cli/*.rb"]
+  t.options = ["--markup-provider=redcarpet", "--markup=markdown", "--no-private", "-p", "yard_templates"]
+  # t.stats_options = ['--list-undoc']
 end
 
 RSpec::Core::RakeTask.new(:spec) do |t|
@@ -22,8 +22,8 @@ end
 
 task default: %i[test]
 
-desc 'Alias for build'
-task :package => :build
+desc "Alias for build"
+task package: :build
 
 task test: "spec"
 task lint: "standard"
@@ -38,10 +38,10 @@ task :console do
   IRB.start
 end
 
-desc 'Development version check'
+desc "Development version check"
 task :ver do
   gver = `git ver`
-  cver = IO.read(File.join(File.dirname(__FILE__), 'CHANGELOG.md')).match(/^#+ (\d+\.\d+\.\d+(\w+)?)/)[1]
+  cver = IO.read(File.join(File.dirname(__FILE__), "CHANGELOG.md")).match(/^#+ (\d+\.\d+\.\d+(\w+)?)/)[1]
   res = `grep VERSION lib/journal-cli/version.rb`
   version = res.match(/VERSION *= *['"](\d+\.\d+\.\d+(\w+)?)/)[1]
   puts "git tag: #{gver}"
@@ -49,22 +49,22 @@ task :ver do
   puts "changelog: #{cver}"
 end
 
-desc 'Changelog version check'
+desc "Changelog version check"
 task :cver do
-  puts IO.read(File.join(File.dirname(__FILE__), 'CHANGELOG.md')).match(/^#+ (\d+\.\d+\.\d+(\w+)?)/)[1]
+  puts IO.read(File.join(File.dirname(__FILE__), "CHANGELOG.md")).match(/^#+ (\d+\.\d+\.\d+(\w+)?)/)[1]
 end
 
-desc 'Bump incremental version number'
+desc "Bump incremental version number"
 task :bump, :type do |_, args|
-  args.with_defaults(type: 'inc')
-  version_file = 'lib/journal-cli/version.rb'
+  args.with_defaults(type: "inc")
+  version_file = "lib/journal-cli/version.rb"
   content = IO.read(version_file)
   content.sub!(/VERSION = '(?<major>\d+)\.(?<minor>\d+)\.(?<inc>\d+)(?<pre>\S+)?'/) do
     m = Regexp.last_match
-    major = m['major'].to_i
-    minor = m['minor'].to_i
-    inc = m['inc'].to_i
-    pre = m['pre']
+    major = m["major"].to_i
+    minor = m["minor"].to_i
+    inc = m["inc"].to_i
+    pre = m["pre"]
 
     case args[:type]
     when /^maj/
@@ -81,5 +81,5 @@ task :bump, :type do |_, args|
     $stdout.puts "At version #{major}.#{minor}.#{inc}#{pre}"
     "VERSION = '#{major}.#{minor}.#{inc}#{pre}'"
   end
-  File.open(version_file, 'w+') { |f| f.puts content }
+  File.open(version_file, "w+") { |f| f.puts content }
 end

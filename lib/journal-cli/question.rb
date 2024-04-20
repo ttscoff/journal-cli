@@ -13,14 +13,14 @@ module Journal
     ## @return     [Question] the question object
     ##
     def initialize(question)
-      @key = question['key']
-      @type = question['type']
-      @min = question['min']&.to_i || 1
-      @max = question['max']&.to_i || 5
-      @prompt = question['prompt'] || nil
-      @secondary_prompt = question['secondary_prompt'] || nil
-      @gum = TTY::Which.exist?('gum')
-      @condition = question.key?('condition') ? question['condition'].parse_condition : true
+      @key = question["key"]
+      @type = question["type"]
+      @min = question["min"]&.to_i || 1
+      @max = question["max"]&.to_i || 5
+      @prompt = question["prompt"] || nil
+      @secondary_prompt = question["secondary_prompt"] || nil
+      @gum = TTY::Which.exist?("gum")
+      @condition = question.key?("condition") ? question["condition"].parse_condition : true
     end
 
     ##
@@ -41,7 +41,7 @@ module Journal
       when /^(text|string|line)/i
         read_line
       when /^(weather|forecast)/i
-        Weather.new(Journal.config['weather_api'], Journal.config['zip'], Journal.config['temp_in'])
+        Weather.new(Journal.config["weather_api"], Journal.config["zip"], Journal.config["temp_in"])
       when /^multi/i
         read_lines
       when /^(date|time)/i
@@ -92,7 +92,7 @@ module Journal
       Journal.notify("{by}#{prompt}")
 
       line = @gum ? read_line_gum(prompt) : read_line_tty
-      return output.join("\n") if line =~ /^ *$/
+      return output.join("\n") if /^ *$/.match?(line)
 
       output << line
       output << read_line(prompt: @secondary_prompt) unless @secondary_prompt.nil?
@@ -129,7 +129,7 @@ module Journal
     ##
     ##
     def read_number_gum
-      trap('SIGINT') { exit! }
+      trap("SIGINT") { exit! }
       res = `gum input --placeholder "#{@min}-#{@max}"`.strip
       return nil if res.strip.empty?
 
@@ -144,9 +144,9 @@ module Journal
     ## @return     [Number] integer response
     ##
     def read_line_tty
-      trap('SIGINT') { exit! }
+      trap("SIGINT") { exit! }
       reader = TTY::Reader.new
-      res = reader.read_line('>> ')
+      res = reader.read_line(">> ")
       return nil if res.strip.empty?
 
       res
@@ -160,7 +160,7 @@ module Journal
     ## @return     [Number] integer response
     ##
     def read_line_gum(prompt)
-      trap('SIGINT') { exit! }
+      trap("SIGINT") { exit! }
       `gum input --placeholder "#{prompt} (blank to end answer)"`
     end
 
@@ -170,7 +170,7 @@ module Journal
     ## @return     [string] multiline input
     ##
     def read_mutliline_tty
-      trap('SIGINT') { exit! }
+      trap("SIGINT") { exit! }
       reader = TTY::Reader.new
       res = reader.read_multiline
       res.join("\n")
@@ -182,7 +182,7 @@ module Journal
     ## @return     [string] multiline input
     ##
     def read_multiline_gum(prompt)
-      trap('SIGINT') { exit! }
+      trap("SIGINT") { exit! }
       `gum write --placeholder "#{prompt}" --width 80 --char-limit 0`
     end
   end

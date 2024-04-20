@@ -17,67 +17,67 @@ module Color
   # @example Send a text string as a color
   #   Color.send('red') => "\e[31m"
   ATTRIBUTES = [
-    [:clear,               0], # String#clear is already used to empty string in Ruby 1.9
-    [:reset,               0], # synonym for :clear
-    [:bold,                1],
-    [:dark,                2],
-    [:italic,              3], # not widely implemented
-    [:underline,           4],
-    [:underscore,          4], # synonym for :underline
-    [:blink,               5],
-    [:rapid_blink,         6], # not widely implemented
-    [:negative,            7], # no reverse because of String#reverse
-    [:concealed,           8],
-    [:strikethrough,       9], # not widely implemented
-    [:strike,              9], # not widely implemented
-    [:black,              30],
-    [:red,                31],
-    [:green,              32],
-    [:yellow,             33],
-    [:blue,               34],
-    [:magenta,            35],
-    [:purple,             35],
-    [:cyan,               36],
-    [:white,              37],
-    [:bgblack,            40],
-    [:bgred,              41],
-    [:bggreen,            42],
-    [:bgyellow,           43],
-    [:bgblue,             44],
-    [:bgmagenta,          45],
-    [:bgpurple,           45],
-    [:bgcyan,             46],
-    [:bgwhite,            47],
-    [:boldblack,          90],
-    [:boldred,            91],
-    [:boldgreen,          92],
-    [:boldyellow,         93],
-    [:boldblue,           94],
-    [:boldmagenta,        95],
-    [:boldpurple,         95],
-    [:boldcyan,           96],
-    [:boldwhite,          97],
-    [:boldbgblack,       100],
-    [:boldbgred,         101],
-    [:boldbggreen,       102],
-    [:boldbgyellow,      103],
-    [:boldbgblue,        104],
-    [:boldbgmagenta,     105],
-    [:boldbgpurple,      105],
-    [:boldbgcyan,        106],
-    [:boldbgwhite,       107],
-    [:softpurple,  '0;35;40'],
-    [:hotpants,    '7;34;40'],
-    [:knightrider, '7;30;40'],
-    [:flamingo,    '7;31;47'],
-    [:yeller,      '1;37;43'],
-    [:whiteboard,  '1;30;47'],
-    [:chalkboard,  '1;37;40'],
-    [:led,         '0;32;40'],
-    [:redacted,    '0;30;40'],
-    [:alert,       '1;31;43'],
-    [:error,       '1;37;41'],
-    [:default, '0;39']
+    [:clear, 0], # String#clear is already used to empty string in Ruby 1.9
+    [:reset, 0], # synonym for :clear
+    [:bold, 1],
+    [:dark, 2],
+    [:italic, 3], # not widely implemented
+    [:underline, 4],
+    [:underscore, 4], # synonym for :underline
+    [:blink, 5],
+    [:rapid_blink, 6], # not widely implemented
+    [:negative, 7], # no reverse because of String#reverse
+    [:concealed, 8],
+    [:strikethrough, 9], # not widely implemented
+    [:strike, 9], # not widely implemented
+    [:black, 30],
+    [:red, 31],
+    [:green, 32],
+    [:yellow, 33],
+    [:blue, 34],
+    [:magenta, 35],
+    [:purple, 35],
+    [:cyan, 36],
+    [:white, 37],
+    [:bgblack, 40],
+    [:bgred, 41],
+    [:bggreen, 42],
+    [:bgyellow, 43],
+    [:bgblue, 44],
+    [:bgmagenta, 45],
+    [:bgpurple, 45],
+    [:bgcyan, 46],
+    [:bgwhite, 47],
+    [:boldblack, 90],
+    [:boldred, 91],
+    [:boldgreen, 92],
+    [:boldyellow, 93],
+    [:boldblue, 94],
+    [:boldmagenta, 95],
+    [:boldpurple, 95],
+    [:boldcyan, 96],
+    [:boldwhite, 97],
+    [:boldbgblack, 100],
+    [:boldbgred, 101],
+    [:boldbggreen, 102],
+    [:boldbgyellow, 103],
+    [:boldbgblue, 104],
+    [:boldbgmagenta, 105],
+    [:boldbgpurple, 105],
+    [:boldbgcyan, 106],
+    [:boldbgwhite, 107],
+    [:softpurple, "0;35;40"],
+    [:hotpants, "7;34;40"],
+    [:knightrider, "7;30;40"],
+    [:flamingo, "7;31;47"],
+    [:yeller, "1;37;43"],
+    [:whiteboard, "1;30;47"],
+    [:chalkboard, "1;37;40"],
+    [:led, "0;32;40"],
+    [:redacted, "0;30;40"],
+    [:alert, "1;31;43"],
+    [:error, "1;37;41"],
+    [:default, "0;39"]
   ].map(&:freeze).freeze
 
   # Array of attribute keys only
@@ -109,8 +109,8 @@ module Color
     ##
     def validate_color
       valid_color = nil
-      compiled = ''
-      normalize_color.split('').each do |char|
+      compiled = ""
+      normalize_color.chars.each do |char|
         compiled += char
         valid_color = compiled if Color.attributes.include?(compiled.to_sym) || compiled =~ /^([fb]g?)?#([a-f0-9]{6})$/i
       end
@@ -126,7 +126,7 @@ module Color
     ## @return     [String] Normalized color name
     ##
     def normalize_color
-      gsub(/_/, '').sub(/bright/i, 'bold').sub(/bgbold/, 'boldbg')
+      delete("_").sub(/bright/i, "bold").sub(/bgbold/, "boldbg")
     end
 
     # Get the calculated ANSI color at the end of the
@@ -137,7 +137,7 @@ module Color
     def last_color_code
       m = scan(ESCAPE_REGEX)
 
-      em = ['0']
+      em = ["0"]
       fg = nil
       bg = nil
       rgbf = nil
@@ -145,8 +145,8 @@ module Color
 
       m.each do |c|
         case c
-        when '0'
-          em = ['0']
+        when "0"
+          em = ["0"]
           fg, bg, rgbf, rgbb = nil
         when /^[34]8/
           case c
@@ -158,7 +158,7 @@ module Color
             rgbb = c
           end
         else
-          c.split(/;/).each do |i|
+          c.split(";").each do |i|
             x = i.to_i
             if x <= 9
               em << x
@@ -179,10 +179,10 @@ module Color
         end
       end
 
-      escape = "\e[#{em.join(';')}m"
+      escape = "\e[#{em.join(";")}m"
       escape += "\e[#{rgbb}m" if rgbb
       escape += "\e[#{rgbf}m" if rgbf
-      escape + "\e[#{[fg, bg].delete_if(&:nil?).join(';')}m"
+      escape + "\e[#{[fg, bg].delete_if(&:nil?).join(";")}m"
     end
   end
 
@@ -230,24 +230,24 @@ module Color
     ## @return     [String] Colorized string
     ##
     def template(input)
-      input = input.join(' ') if input.is_a? Array
-      return input.gsub(/(?<!\\)\{(\w+)\}/i, '') unless Color.coloring?
+      input = input.join(" ") if input.is_a? Array
+      return input.gsub(/(?<!\\)\{(\w+)\}/i, "") unless Color.coloring?
 
       input = input.gsub(/(?<!\\)\{((?:[fb]g?)?#[a-f0-9]{3,6})\}/i) do
-                hex = Regexp.last_match(1)
-                rgb(hex)
-              end
-
-      fmt = input.gsub(/%/, '%%')
-      fmt = fmt.gsub(/(?<!\\)\{(\w+)\}/i) do
-        Regexp.last_match(1).split('').map { |c| "%<#{c}>s" }.join('')
+        hex = Regexp.last_match(1)
+        rgb(hex)
       end
 
-      colors = { w: white, k: black, g: green, l: blue,
-                 y: yellow, c: cyan, m: magenta, r: red,
-                 W: bgwhite, K: bgblack, G: bggreen, L: bgblue,
-                 Y: bgyellow, C: bgcyan, M: bgmagenta, R: bgred,
-                 d: dark, b: bold, u: underline, i: italic, x: reset }
+      fmt = input.gsub(/%/, "%%")
+      fmt = fmt.gsub(/(?<!\\)\{(\w+)\}/i) do
+        Regexp.last_match(1).chars.map { |c| "%<#{c}>s" }.join("")
+      end
+
+      colors = {w: white, k: black, g: green, l: blue,
+                y: yellow, c: cyan, m: magenta, r: red,
+                W: bgwhite, K: bgblack, G: bggreen, L: bgblue,
+                Y: bgyellow, C: bgcyan, M: bgmagenta, R: bgred,
+                d: dark, b: bold, u: underline, i: italic, x: reset}
 
       format(fmt, colors)
     end
@@ -275,12 +275,12 @@ module Color
 
     module_eval(new_method)
 
-    next unless c =~ /bold/
+    next unless /bold/.match?(c)
 
     # Accept brightwhite in addition to boldwhite
     new_method = <<-EOSCRIPT
       # color string as #{c}
-      def #{c.to_s.sub(/bold/, 'bright')}(string = nil)
+      def #{c.to_s.sub(/bold/, "bright")}(string = nil)
         result = ''
         result << "\e[#{v}m" if Color.coloring?
         if block_given?
@@ -308,8 +308,8 @@ module Color
   ## @return     [String] ANSI escape string
   ##
   def rgb(hex)
-    is_bg = hex.match(/^bg?#/) ? true : false
-    hex_string = hex.sub(/^([fb]g?)?#/, '')
+    is_bg = /^bg?#/.match?(hex)
+    hex_string = hex.sub(/^([fb]g?)?#/, "")
 
     if hex_string.length == 3
       parts = hex_string.match(/(?<r>.)(?<g>.)(?<b>.)/)
@@ -319,7 +319,7 @@ module Color
         t << parts[e]
         t << parts[e]
       end
-      hex_string = t.join('')
+      hex_string = t.join("")
     end
 
     parts = hex_string.match(/(?<r>..)(?<g>..)(?<b>..)/)
@@ -328,7 +328,7 @@ module Color
       t << parts[e].hex
     end
 
-    "\e[#{is_bg ? '48' : '38'};2;#{t.join(';')}m"
+    "\e[#{is_bg ? "48" : "38"};2;#{t.join(";")}m"
   end
 
   # Regular expression that is used to scan for ANSI-sequences while
@@ -339,13 +339,13 @@ module Color
   # ANSI-sequences are stripped from the string.
   def uncolor(string = nil) # :yields:
     if block_given?
-      yield.to_str.gsub(COLORED_REGEXP, '')
+      yield.to_str.gsub(COLORED_REGEXP, "")
     elsif string.respond_to?(:to_str)
-      string.to_str.gsub(COLORED_REGEXP, '')
+      string.to_str.gsub(COLORED_REGEXP, "")
     elsif respond_to?(:to_str)
-      to_str.gsub(COLORED_REGEXP, '')
+      to_str.gsub(COLORED_REGEXP, "")
     else
-      ''
+      ""
     end
   end
 

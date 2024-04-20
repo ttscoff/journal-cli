@@ -13,10 +13,10 @@ module Journal
     ## @return     [Section] the configured section
     ##
     def initialize(section)
-      @key = section['key']
-      @title = section['title']
-      @condition = section.key?('condition') ? section['condition'].parse_condition : true
-      @questions = section['questions'].map { |question| Question.new(question) }
+      @key = section["key"]
+      @title = section["title"]
+      @condition = section.key?("condition") ? section["condition"].parse_condition : true
+      @questions = section["questions"].map { |question| Question.new(question) }
       @questions.delete_if { |q| q.prompt.nil? }
       @answers = {}
       ask_questions
@@ -29,9 +29,9 @@ module Journal
     ##
     def ask_questions
       @questions.each do |question|
-        if question.key =~ /\./
+        if /\./.match?(question.key)
           res = @answers
-          keys = question.key.split(/\./)
+          keys = question.key.split(".")
           keys.each_with_index do |key, i|
             next if i == keys.count - 1
 

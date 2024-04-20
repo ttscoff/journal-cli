@@ -38,12 +38,6 @@ If you want to use Day One with Journal, you'll need to [install the Day One CLI
 $ sudo bash /Applications/Day\ One.app/Contents/Resources/install_cli.sh
 ```
 
-## Usage
-
-```
-@cli(bundle exec bin/journal -h)
-```
-
 ## Configuration
 
 A config must be created at `~/.config/journal/journals.yaml`:
@@ -61,9 +55,13 @@ This file contains a YAML definition of your journal. Each journal gets a top-le
 
 You can include weather data automatically by setting a question type to 'weather'. In order for this to work, you'll need to define `zip` and `weather_api` keys. `zip` is just your zip code, and `weather_api` is a key from WeatherAPI.com. Sign up [here](https://www.weatherapi.com/) for a free plan, and then visit the [profile page](https://www.weatherapi.com/my/) to see your API key at the top.
 
+> Zip codes beginning with zero (0) must be quoted. Use:
+>
+>    zip: '01001'
+
 You can optionally set the key `temp_in:` to `f` or `c` to control what scale is used for temperatures.
 
-If a question type is set to `weather.forecast`, only the predicted condition, high, and low will be included in the JSON data for the question. A full printout of hourly temps will be included in the Markdown/Day One output.
+If a question type is set to `weather.forecast`, the moon phase and predicted condition, high, and low will be included in the JSON data for the question. A full printout of hourly temps will be included in the Markdown/Day One output.
 
 If the question type is `weather.current`, only the current condition and temperature will be recorded to the JSON, and a string containing "[TEMP] and [CONDITION]" (e.g. "64 and Sunny") will be recorded to Markdown/Day One for the question.
 
