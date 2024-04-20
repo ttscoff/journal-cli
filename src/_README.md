@@ -61,7 +61,7 @@ You can include weather data automatically by setting a question type to 'weathe
 
 You can optionally set the key `temp_in:` to `f` or `c` to control what scale is used for temperatures.
 
-If a question type is set to `weather.forecast`, only the predicted condition, high, and low will be included in the JSON data for the question. A full printout of hourly temps will be included in the Markdown/Day One output.
+If a question type is set to `weather.forecast`, the moon phase and predicted condition, high, and low will be included in the JSON data for the question. A full printout of hourly temps will be included in the Markdown/Day One output.
 
 If the question type is `weather.current`, only the current condition and temperature will be recorded to the JSON, and a string containing "[TEMP] and [CONDITION]" (e.g. "64 and Sunny") will be recorded to Markdown/Day One for the question.
 
