@@ -5,17 +5,17 @@ class ::String
   def parse_condition
     condition = dup
     time_rx = /(?<comp>[<>=]{1,2}|before|after) +(?<time>(?:noon|midnight|[0-9]+) *(?:am|pm)?)$/i
-    return true unless condition =~ time_rx
+    return true unless condition&.match?(time_rx)
 
     now = Journal.date
     m = condition.match(time_rx)
-    time = Chronic.parse(m['time'])
+    time = Chronic.parse(m["time"])
     now.localtime
     time.localtime
-    time_of_day = Time.parse("#{now.strftime('%Y-%m-%d')} #{time.strftime('%H:%M')}")
-    Journal.notify("{br}Invalid time string in question (#{m['time']})", exit_code: 4) unless time
+    time_of_day = Time.parse("#{now.strftime("%Y-%m-%d")} #{time.strftime("%H:%M")}")
+    Journal.notify("{br}Invalid time string in question (#{m["time"]})", exit_code: 4) unless time
 
-    case m['comp']
+    case m["comp"]
     when /^<=$/
       now <= time_of_day
     when /^(<|bef)/i
