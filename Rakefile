@@ -17,7 +17,7 @@ YARD::Rake::YardocTask.new do |t|
 end
 
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = "--pattern {spec,lib}/**/*_spec.rb"
+  t.rspec_opts = "--pattern spec/*_spec.rb"
 end
 
 task default: %i[test]
