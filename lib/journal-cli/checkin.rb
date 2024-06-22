@@ -3,6 +3,11 @@ module Journal
   class Checkin
     attr_reader :key, :date, :data, :config, :journal, :sections, :title, :output
 
+    ##
+    ## Initialize a new checkin using a configured journal
+    ##
+    ## @param      journal  [Journal] The journal
+    ##
     def initialize(journal)
       @key = journal
       @output = []
@@ -19,26 +24,51 @@ module Journal
       @title = @journal["title"].sub(/%M/, meridian)
     end
 
+    ##
+    ## Add a title (Markdown) to the output
+    ##
+    ## @param      string  [String] The string
+    ##
     def add_title(string)
       @output << "\n## #{string}\n" unless string.nil?
     end
 
+    ##
+    ## Add a question header (Markdown) to the output
+    ##
+    ## @param      string  [String] The string
+    ##
     def header(string)
       @output << "\n##### #{string}\n" unless string.nil?
     end
 
+    ##
+    ## Add a section header (Markdown) to the output
+    ##
+    ## @param      string  [String] The string
+    ##
     def section(string)
       @output << "\n###### #{string}\n" unless string.nil?
     end
 
+    ##
+    ## Add a newline to the output
+    ##
     def newline
       @output << "\n"
     end
 
+    ##
+    ## Add a horizontal rule (Markdown) to the output
+    ##
     def hr
       @output << "\n* * * * * *\n"
     end
 
+    ##
+    ## Finalize the checkin, saving data to JSON, Day One,
+    ## and Markdown as configured
+    ##
     def go
       @sections.each { |key, section| @data[key] = section }
 
