@@ -3,6 +3,11 @@ module Journal
   class Checkin
     attr_reader :key, :date, :data, :config, :journal, :sections, :title, :output
 
+    ##
+    ## Initialize a new checkin using a configured journal
+    ##
+    ## @param      journal  [Journal] The journal
+    ##
     def initialize(journal)
       @key = journal
       @output = []
@@ -19,26 +24,51 @@ module Journal
       @title = @journal["title"].sub(/%M/, meridian)
     end
 
+    ##
+    ## Add a title (Markdown) to the output
+    ##
+    ## @param      string  [String] The string
+    ##
     def add_title(string)
       @output << "\n## #{string}\n" unless string.nil?
     end
 
+    ##
+    ## Add a question header (Markdown) to the output
+    ##
+    ## @param      string  [String] The string
+    ##
     def header(string)
       @output << "\n##### #{string}\n" unless string.nil?
     end
 
+    ##
+    ## Add a section header (Markdown) to the output
+    ##
+    ## @param      string  [String] The string
+    ##
     def section(string)
       @output << "\n###### #{string}\n" unless string.nil?
     end
 
+    ##
+    ## Add a newline to the output
+    ##
     def newline
       @output << "\n"
     end
 
+    ##
+    ## Add a horizontal rule (Markdown) to the output
+    ##
     def hr
       @output << "\n* * * * * *\n"
     end
 
+    ##
+    ## Finalize the checkin, saving data to JSON, Day One,
+    ## and Markdown as configured
+    ##
     def go
       @sections.each { |key, section| @data[key] = section }
 
@@ -57,11 +87,31 @@ module Journal
       end
     end
 
+    ##
+    ## Launch Day One and quit if it wasn't running
+    ##
+    def launch_day_one
+      # Launch Day One to ensure database is up-to-date
+      # test if Day One is open
+      running = !`ps ax | grep "/MacOS/Day One" | grep -v grep`.strip.empty?
+      # -g do not bring app to foreground
+      # -j launch hidden
+      `/usr/bin/open -gj -a "Day One"`
+      # quit if it wasn't running
+      `osascript -e 'tell app "Day One" to quit'` if !running
+    end
+
+    ##
+    ## Save journal entry to Day One using the command line tool
+    ##
     def save_day_one_entry
       unless TTY::Which.exist?("dayone2")
         Journal.notify("{br}Day One CLI not installed, no Day One entry created")
         return
       end
+
+      launch_day_one
+
       @date.localtime
       cmd = ["dayone2"]
       cmd << %(-j "#{@journal["journal"]}") if @journal.key?("journal")
@@ -71,6 +121,9 @@ module Journal
       Journal.notify("{bg}Entered one entry into Day One")
     end
 
+    ##
+    ## Save entry to an existing Markdown file
+    ##
     def save_single_markdown
       dir = if @journal.key?("entries_folder")
         File.join(File.expand_path(@journal["entries_folder"]), "entries")
@@ -93,6 +146,9 @@ module Journal
       Journal.notify "{bg}Added new entry to {bw}#{target}"
     end
 
+    ##
+    ## Save journal entry to daily Markdown file
+    ##
     def save_daily_markdown
       dir = if @journal.key?("entries_folder")
         File.join(File.expand_path(@journal["entries_folder"]), "entries")
@@ -114,6 +170,9 @@ module Journal
       Journal.notify "{bg}Saved daily Markdown to {bw}#{target}"
     end
 
+    ##
+    ## Save journal entry to an new individual Markdown file
+    ##
     def save_individual_markdown
       dir = if @journal.key?("entries_folder")
         File.join(File.expand_path(@journal["entries_folder"]), "entries")

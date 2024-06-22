@@ -2,6 +2,12 @@
 
 # String helpers
 class ::String
+
+  ##
+  ## Parse and test a condition
+  ##
+  ## @return     [Boolean] whether test passed
+  ##
   def parse_condition
     condition = dup
     time_rx = /(?<comp>[<>=]{1,2}|before|after) +(?<time>(?:noon|midnight|[0-9]+) *(?:am|pm)?)$/i

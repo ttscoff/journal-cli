@@ -4,6 +4,13 @@ module Journal
   class Weather
     attr_reader :data
 
+    ##
+    ## Initialize the weather object, contacting API and parsing out conditions and forecast
+    ##
+    ## @param      api      [String] The api key
+    ## @param      zip      [String] The zip code
+    ## @param      temp_in  [String] F or C
+    ##
     def initialize(api, zip, temp_in)
       Journal.date.localtime
       res = if Journal.date.strftime("%Y-%m-%d") == Time.now.strftime("%Y-%m-%d")
@@ -43,13 +50,13 @@ module Journal
 
       hours = forecast["hour"]
       temps = [
-        {temp: hours[8][temp_key], condition: hours[8]["condition"]["text"]},
-        {temp: hours[10][temp_key], condition: hours[10]["condition"]["text"]},
-        {temp: hours[12][temp_key], condition: hours[12]["condition"]["text"]},
-        {temp: hours[14][temp_key], condition: hours[14]["condition"]["text"]},
-        {temp: hours[16][temp_key], condition: hours[16]["condition"]["text"]},
-        {temp: hours[18][temp_key], condition: hours[18]["condition"]["text"]},
-        {temp: hours[19][temp_key], condition: hours[20]["condition"]["text"]}
+        { temp: hours[8][temp_key], condition: hours[8]["condition"]["text"] },
+        { temp: hours[10][temp_key], condition: hours[10]["condition"]["text"] },
+        { temp: hours[12][temp_key], condition: hours[12]["condition"]["text"] },
+        { temp: hours[14][temp_key], condition: hours[14]["condition"]["text"] },
+        { temp: hours[16][temp_key], condition: hours[16]["condition"]["text"] },
+        { temp: hours[18][temp_key], condition: hours[18]["condition"]["text"] },
+        { temp: hours[19][temp_key], condition: hours[20]["condition"]["text"] }
       ]
 
       @data = {
@@ -64,6 +71,11 @@ module Journal
       }
     end
 
+    ##
+    ## Convert weather object to hash
+    ##
+    ## @return     [Hash] Data representation of the object.
+    ##
     def to_data
       {
         high: @data[:high],
@@ -73,22 +85,52 @@ module Journal
       }
     end
 
+    ##
+    ## Get moon phase
+    ##
+    ## @return     [String] moon phase
+    ##
     def moon
       @data[:moon_phase]
     end
 
+    ##
+    ## Get current conditon
+    ##
+    ## @return     [String] condition as string (54 and
+    ##             Sunny)
+    ##
     def current
       "#{@data[:temp]} and #{@data[:current_condition]}"
     end
 
+    ##
+    ## Get daily forecast
+    ##
+    ## @return     [String] daily forecast as string (Sunny
+    ##             65/80)
+    ##
     def forecast
       "#{@data[:condition]} #{@data[:high]}/#{@data[:low]}"
     end
 
+    ##
+    ## Weather condition and forecast
+    ##
+    ## @return     [String] string representation of the
+    ##             weather object.
+    ##
     def to_s
       "#{@data[:temp].round} and #{@data[:current_condition]} (#{@data[:high].round}/#{@data[:low].round})"
     end
 
+    ##
+    ## Markdown representation of data, including hourly
+    ## forecast and conditions
+    ##
+    ## @return     [String] Markdown representation of the
+    ##             weather object.
+    ##
     def to_markdown
       output = []
 

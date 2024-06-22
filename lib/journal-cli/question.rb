@@ -33,20 +33,22 @@ module Journal
 
       return nil unless @condition && condition
 
-      case @type
-      when /^int/i
-        read_number(integer: true)
-      when /^(float|num)/i
-        read_number
-      when /^(text|string|line)/i
-        read_line
-      when /^(weather|forecast)/i
-        Weather.new(Journal.config["weather_api"], Journal.config["zip"], Journal.config["temp_in"])
-      when /^multi/i
-        read_lines
-      when /^(date|time)/i
-        read_date
-      end
+      res = case @type
+            when /^int/i
+              read_number(integer: true)
+            when /^(float|num)/i
+              read_number
+            when /^(text|string|line)/i
+              read_line
+            when /^(weather|forecast)/i
+              Weather.new(Journal.config["weather_api"], Journal.config["zip"], Journal.config["temp_in"])
+            when /^multi/i
+              read_lines
+            when /^(date|time)/i
+              read_date
+            end
+      Journal.notify("{dw}#{prompt}: {dy}#{res}{x}".x)
+      res
     end
 
     private

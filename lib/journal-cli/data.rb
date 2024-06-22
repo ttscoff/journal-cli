@@ -10,6 +10,11 @@ module Journal
       super
     end
 
+    ##
+    ## Convert Data object to a hash
+    ##
+    ## @return     [Hash] Data representation of the object.
+    ##
     def to_data
       output = {}
       @questions.each do |q|
