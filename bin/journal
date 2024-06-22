@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -W1
 
 $LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
 require 'journal-cli'
