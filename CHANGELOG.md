@@ -1,3 +1,13 @@
+### 1.0.35
+
+2024-06-22 11:45
+
+#### IMPROVED
+
+- Display answers to prompt when filling out entry
+- Launch Day One before trying to add entry. Day One's database frequently gets updated and the command line tool will throw an error if Day One hasn't been launched. So launch it hidden in the background, and then quit if it wasn't running to begin with. This will cause the database to update.
+- Method documentation
+
 ### 1.0.34
 
 2024-06-22 11:01
