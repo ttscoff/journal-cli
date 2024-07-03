@@ -1,3 +1,11 @@
+### 1.0.36
+
+2024-07-03 11:31
+
+#### FIXED
+
+- Give Day One time to launch and update db when adding entry
+
 ### 1.0.35
 
 2024-06-22 11:45
