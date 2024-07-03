@@ -93,12 +93,11 @@ module Journal
     def launch_day_one
       # Launch Day One to ensure database is up-to-date
       # test if Day One is open
-      running = !`ps ax | grep "/MacOS/Day One" | grep -v grep`.strip.empty?
+      @running = !`ps ax | grep "/MacOS/Day One" | grep -v grep`.strip.empty?
       # -g do not bring app to foreground
       # -j launch hidden
       `/usr/bin/open -gj -a "Day One"`
-      # quit if it wasn't running
-      `osascript -e 'tell app "Day One" to quit'` if !running
+      sleep 3
     end
 
     ##
@@ -119,6 +118,9 @@ module Journal
       cmd << %(-date "#{@date.strftime("%Y-%m-%d %I:%M %p")}")
       `echo #{Shellwords.escape(to_markdown(yaml: false, title: true))} | #{cmd.join(" ")} -- new`
       Journal.notify("{bg}Entered one entry into Day One")
+
+      # quit if it wasn't running
+      `osascript -e 'tell app "Day One" to quit'` if !@running
     end
 
     ##
