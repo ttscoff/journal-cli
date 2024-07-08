@@ -154,7 +154,7 @@ If a question has a key `secondary_question`, the prompt will be repeated with t
 A question `type` can be one of:
 
 - `text` or `string` will request a single-line string, submitted on return
-- `multiline` for multiline strings (opens a readline editor, use ctrl-d to save)
+- `multiline` for multiline strings. (Opens a readline editor, use ctrl-d to save. If the latest version of gum is being used, use ctrl-j to create a new line, enter will save.)
 - `weather` will just insert current weather data with no prompt
   * `weather.forecast` will insert just the forecast (using weather history for backdated entries)
   * `weather.current` will insert just the current temperature and condition (using weather history for backdated entries)
@@ -207,5 +207,5 @@ Questions with numeric answers will have a valid range assigned. Enter just a nu
 
 Questions with type 'string' or 'text' will save when you hit return. Pressing return without typing anything will leave that answer blank, and it will be ignored when exporting to Markdown or Day One (an empty value will exist in the JSON database).
 
-When using the mutiline type, you'll get an edit field that responds to most control-key navigation and allows insertion and movement. To save a multiline field, type CTRL-d.
+When using the mutiline type, you'll get an edit field that responds to most control-key navigation and allows insertion and movement. To save a multiline field, type CTRL-d. If the latest version of Gum is being used, ctrl-j will create a new line, enter will save.
 

@@ -1,23 +1,24 @@
 #!/usr/bin/env ruby -W1
 
-$LOAD_PATH.unshift File.join(__dir__, '..', 'lib')
-require 'journal-cli'
-require 'optparse'
+$LOAD_PATH.unshift File.join(__dir__, "..", "lib")
+require "journal-cli"
+require "optparse"
 
-trap('SIGINT') { exit! }
+trap("SIGINT") { exit! }
 
+# Main module
 module Journal
   class << self
     def usage
-      puts 'Usage: journal [type] [date]'
+      puts "Usage: journal [type] [date]"
       puts
-      puts 'Available journal types:'
+      puts "Available journal types:"
       list_journals
     end
 
     def list_journals
       config = Journal.config
-      puts config['journals'].keys
+      puts config["journals"].keys
     end
 
     def run(args)
@@ -30,14 +31,14 @@ module Journal
       journal = args.shift
 
       date = if args.length.positive?
-               Chronic.parse(args.join(' '), future: false)
+               Chronic.parse(args.join(" "), future: false)
              else
                Time.now
              end
 
       Journal.date = date
 
-      if Journal.config['journals'].key?(journal)
+      if Journal.config["journals"].key?(journal)
         checkin = Journal::Checkin.new(journal)
         checkin.go
       else
@@ -50,29 +51,29 @@ module Journal
 end
 
 optparse = OptionParser.new do |opts|
-  opts.banner = 'Usage: journal JOURNAL_KEY [NATURAL LANGUAGE DATE]'
+  opts.banner = "Usage: journal JOURNAL_KEY [NATURAL LANGUAGE DATE]"
 
-  opts.on('-v', '--version', 'Display version') do
+  opts.on("-v", "--version", "Display version") do
     puts "journal v#{Journal::VERSION}"
     Process.exit 0
   end
 
-  opts.on('-l', '--list', 'List available journals') do
+  opts.on("-l", "--list", "List available journals") do
     Journal.list_journals
     Process.exit 0
   end
 
   Color.coloring = $stdout.isatty
-  opts.on('--[no-]color', 'Colorize output') do |c|
+  opts.on("--[no-]color", "Colorize output") do |c|
     Color.coloring = c
   end
 
-  opts.on('-h', '--help', 'Display help') do
+  opts.on("-h", "--help", "Display help") do
     puts opts
     puts
-    puts 'Available journal types:'
+    puts "Available journal types:"
     config = Journal.config
-    puts(config['journals'].keys.map { |k| "- #{k}" })
+    puts(config["journals"].keys.map { |k| "- #{k}" })
     Process.exit 0
   end
 end
