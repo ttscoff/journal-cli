@@ -1,10 +1,11 @@
 ### 1.0.36
 
-2024-07-03 11:31
+2026-02-01 14:59
 
 #### FIXED
 
 - Give Day One time to launch and update db when adding entry
+- Windows requires curl commands to use double quotes for urls
 
 ### 1.0.35
 
