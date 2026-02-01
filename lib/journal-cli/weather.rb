@@ -14,9 +14,9 @@ module Journal
     def initialize(api, zip, temp_in)
       Journal.date.localtime
       res = if Journal.date.strftime("%Y-%m-%d") == Time.now.strftime("%Y-%m-%d")
-        `curl -SsL 'http://api.weatherapi.com/v1/forecast.json?key=#{api}&q=#{zip}&aqi=no'`
+        `curl -SsL "http://api.weatherapi.com/v1/forecast.json?key=#{api}&q=#{zip}&aqi=no"`
       else
-        `curl -SsL 'http://api.weatherapi.com/v1/history.json?key=#{api}&q=#{zip}&aqi=no&dt=#{Journal.date.strftime("%Y-%m-%d")}'`
+        `curl -SsL "http://api.weatherapi.com/v1/history.json?key=#{api}&q=#{zip}&aqi=no&dt=#{Journal.date.strftime("%Y-%m-%d")}"`
       end
 
       data = JSON.parse(res)
